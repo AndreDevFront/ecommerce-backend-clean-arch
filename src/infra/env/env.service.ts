@@ -13,4 +13,10 @@ export class EnvService {
   get getPort() {
     return this.configService.get('PORT', { infer: true });
   }
+
+  get isDevelopment(): boolean {
+    return (
+      this.configService.get('NODE_ENV', { infer: true }) === 'development'
+    );
+  }
 }
