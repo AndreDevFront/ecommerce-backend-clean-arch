@@ -54,6 +54,9 @@ export class Product {
   get createdAt() {
     return this._props.createdAt;
   }
+  get updatedAt() {
+    return this._props.updatedAt;
+  }
 
   public decreaseStock(quantity: number) {
     if (this._props.stock < quantity) {
