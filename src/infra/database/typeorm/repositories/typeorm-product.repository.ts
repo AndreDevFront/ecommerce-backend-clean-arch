@@ -5,6 +5,7 @@ import { ProductRepository } from 'src/domain/repositories/product-repository.in
 import { Product } from 'src/domain/entities/product.entity';
 import { ProductSchema } from '../entities/product.schema';
 import { TypeOrmProductMapper } from '../mappers/typeorm-product.mapper';
+import { PaginationParams, PaginatedResult } from 'src/core/types/pagination';
 
 @Injectable()
 export class TypeOrmProductRepository implements ProductRepository {
@@ -12,6 +13,27 @@ export class TypeOrmProductRepository implements ProductRepository {
     @InjectRepository(ProductSchema)
     private typeOrmRepo: Repository<ProductSchema>,
   ) {}
+
+  async findAll({
+    page,
+    perPage,
+  }: PaginationParams): Promise<PaginatedResult<Product>> {
+    const [productsSchema, total] = await this.typeOrmRepo.findAndCount({
+      skip: (page - 1) * perPage,
+      take: perPage,
+      order: { createdAt: 'DESC' },
+    });
+
+    return {
+      data: productsSchema.map((item) => TypeOrmProductMapper.toDomain(item)),
+      meta: {
+        page,
+        perPage,
+        total,
+        totalPages: Math.ceil(total / perPage),
+      },
+    };
+  }
 
   async create(product: Product): Promise<void> {
     const data = TypeOrmProductMapper.toPersistence(product);
