@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  Param,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -19,12 +21,18 @@ import {
 } from './schemas/list-products.schema';
 import { ListProductsUseCase } from 'src/application/use-cases/list-products.use-case';
 import { AuthGuard } from '@nestjs/passport';
+import {
+  EditProductSchema,
+  type EditProductDto,
+} from './schemas/edit-product.schema';
+import { EditProductUseCase } from 'src/application/use-cases/edit-product.use-case';
 
 @Controller('products')
 export class ProductsController {
   constructor(
     private createProductUseCase: CreateProductUseCase,
     private listProductsUseCase: ListProductsUseCase,
+    private editProductUseCase: EditProductUseCase,
   ) {}
 
   @Post()
@@ -51,5 +59,17 @@ export class ProductsController {
     });
 
     return result;
+  }
+
+  @Patch(':id')
+  @UseGuards(AuthGuard('jwt'))
+  @UsePipes(new ZodValidationPipe(EditProductSchema.schema))
+  async update(@Param('id') id: string, @Body() body: EditProductDto) {
+    const product = await this.editProductUseCase.execute({
+      productId: id,
+      ...body,
+    });
+
+    return { product };
   }
 }

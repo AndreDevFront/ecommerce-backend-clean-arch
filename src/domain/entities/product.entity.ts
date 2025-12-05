@@ -64,4 +64,12 @@ export class Product {
     }
     this._props.stock -= quantity;
   }
+
+  public update(
+    params: Partial<Omit<ProductProps, 'id' | 'createdAt' | 'updatedAt'>>,
+  ) {
+    Object.assign(this._props, params);
+
+    this._props.updatedAt = new Date();
+  }
 }

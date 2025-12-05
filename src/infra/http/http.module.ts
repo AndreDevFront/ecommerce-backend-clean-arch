@@ -9,6 +9,7 @@ import { AuthenticateController } from './controllers/authenticate.controller';
 import { AuthenticateUserUseCase } from 'src/application/use-cases/authenticate-user.use-case';
 import { PlaceOrderUseCase } from 'src/application/use-cases/place-order.use-case';
 import { OrdersController } from './controllers/orders.controller';
+import { EditProductUseCase } from 'src/application/use-cases/edit-product.use-case';
 
 @Module({
   imports: [DatabaseModule],
@@ -24,6 +25,7 @@ import { OrdersController } from './controllers/orders.controller';
     CreateUserUseCase,
     AuthenticateUserUseCase,
     PlaceOrderUseCase,
+    EditProductUseCase,
   ],
 })
 export class HttpModule {}
