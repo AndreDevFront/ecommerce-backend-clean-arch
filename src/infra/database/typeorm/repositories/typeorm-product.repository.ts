@@ -52,4 +52,21 @@ export class TypeOrmProductRepository implements ProductRepository {
 
     return TypeOrmProductMapper.toDomain(found);
   }
+
+  async save(product: Product): Promise<void> {
+    const data = TypeOrmProductMapper.toPersistence(product);
+    await this.typeOrmRepo.save(data);
+  }
+
+  async findById(id: string): Promise<Product | null> {
+    const found = await this.typeOrmRepo.findOne({
+      where: { id },
+    });
+
+    if (!found) {
+      return null;
+    }
+
+    return TypeOrmProductMapper.toDomain(found);
+  }
 }

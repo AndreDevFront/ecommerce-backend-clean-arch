@@ -8,6 +8,10 @@ import { TypeOrmProductRepository } from './typeorm/repositories/typeorm-product
 import { UserSchema } from './typeorm/entities/user.schema';
 import { UserRepository } from 'src/domain/repositories/user-repository.interface';
 import { TypeOrmUserRepository } from './typeorm/repositories/typeorm-user.repository';
+import { OrderItemSchema } from './typeorm/entities/order-item.schema';
+import { OrderSchema } from './typeorm/entities/order.schema';
+import { OrderRepository } from 'src/domain/repositories/order-repository.interface';
+import { TypeOrmOrderRepository } from './typeorm/repositories/typeorm-order.repository';
 
 @Module({
   imports: [
@@ -19,12 +23,17 @@ import { TypeOrmUserRepository } from './typeorm/repositories/typeorm-user.repos
         url: envService.getDatabaseUrl,
         ssl: true,
         extra: { ssl: { rejectUnauthorized: false } },
-        entities: [ProductSchema, UserSchema],
+        entities: [ProductSchema, UserSchema, OrderSchema, OrderItemSchema],
         synchronize: envService.isDevelopment,
       }),
     }),
 
-    TypeOrmModule.forFeature([ProductSchema, UserSchema]),
+    TypeOrmModule.forFeature([
+      ProductSchema,
+      UserSchema,
+      OrderSchema,
+      OrderItemSchema,
+    ]),
   ],
   providers: [
     {
@@ -35,7 +44,11 @@ import { TypeOrmUserRepository } from './typeorm/repositories/typeorm-user.repos
       provide: UserRepository,
       useClass: TypeOrmUserRepository,
     },
+    {
+      provide: OrderRepository,
+      useClass: TypeOrmOrderRepository,
+    },
   ],
-  exports: [ProductRepository, UserRepository],
+  exports: [ProductRepository, UserRepository, OrderRepository],
 })
 export class DatabaseModule {}

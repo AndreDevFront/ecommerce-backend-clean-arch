@@ -50,6 +50,10 @@ export class Order {
     return this._props.createdAt;
   }
 
+  get updatedAt() {
+    return this._props.updatedAt;
+  }
+
   get total(): number {
     return this._props.items.reduce((sum, item) => sum + item.total, 0);
   }

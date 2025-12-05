@@ -7,15 +7,23 @@ import { CreateUserUseCase } from 'src/application/use-cases/create-user.use-cas
 import { UsersController } from './controllers/users.controller';
 import { AuthenticateController } from './controllers/authenticate.controller';
 import { AuthenticateUserUseCase } from 'src/application/use-cases/authenticate-user.use-case';
+import { PlaceOrderUseCase } from 'src/application/use-cases/place-order.use-case';
+import { OrdersController } from './controllers/orders.controller';
 
 @Module({
   imports: [DatabaseModule],
-  controllers: [ProductsController, UsersController, AuthenticateController],
+  controllers: [
+    ProductsController,
+    UsersController,
+    AuthenticateController,
+    OrdersController,
+  ],
   providers: [
     CreateProductUseCase,
     ListProductsUseCase,
     CreateUserUseCase,
     AuthenticateUserUseCase,
+    PlaceOrderUseCase,
   ],
 })
 export class HttpModule {}
