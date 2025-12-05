@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query, UsePipes } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
 import { CreateProductUseCase } from 'src/application/use-cases/create-product.use-case';
 import {
   CreateProductSchema,
@@ -10,6 +18,7 @@ import {
   ListProductsSchema,
 } from './schemas/list-products.schema';
 import { ListProductsUseCase } from 'src/application/use-cases/list-products.use-case';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('products')
 export class ProductsController {
@@ -19,6 +28,7 @@ export class ProductsController {
   ) {}
 
   @Post()
+  @UseGuards(AuthGuard('jwt'))
   @UsePipes(new ZodValidationPipe(CreateProductSchema.schema))
   async create(@Body() body: CreateProductDto) {
     const product = await this.createProductUseCase.execute({
