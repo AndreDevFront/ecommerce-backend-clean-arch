@@ -19,4 +19,8 @@ export class EnvService {
       this.configService.get('NODE_ENV', { infer: true }) === 'development'
     );
   }
+
+  get getJwtSecret() {
+    return this.configService.get('JWT_PRIVATE_KEY', { infer: true });
+  }
 }
