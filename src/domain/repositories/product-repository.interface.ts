@@ -7,4 +7,5 @@ export abstract class ProductRepository {
   abstract findAll(params: PaginationParams): Promise<PaginatedResult<Product>>;
   abstract findById(id: string): Promise<Product | null>;
   abstract save(product: Product): Promise<void>;
+  abstract delete(id: string): Promise<void>;
 }

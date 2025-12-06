@@ -14,6 +14,10 @@ export class TypeOrmProductRepository implements ProductRepository {
     private typeOrmRepo: Repository<ProductSchema>,
   ) {}
 
+  async delete(id: string): Promise<void> {
+    await this.typeOrmRepo.delete(id);
+  }
+
   async findAll({
     page,
     perPage,

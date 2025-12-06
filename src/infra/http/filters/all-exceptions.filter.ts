@@ -1,19 +1,20 @@
 import {
-  ExceptionFilter,
-  Catch,
   ArgumentsHost,
+  Catch,
+  ExceptionFilter,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
-import { DomainException } from 'src/core/exceptions/domain-exception';
 import { ConflictException } from 'src/core/exceptions/conflict.exception';
+import { DomainException } from 'src/core/exceptions/domain-exception';
 import { ResourceNotFoundException } from 'src/core/exceptions/resource-not-found.exception';
 
 interface HttpExceptionResponse {
   statusCode: number;
   message: string | string[];
   error?: string;
+  errors?: unknown[];
 }
 
 @Catch()
@@ -26,7 +27,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     let httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
     let message: string | string[] = 'Internal server error';
-    let details: string | null = null;
+    let details: string | object | null = null;
 
     if (exception instanceof HttpException) {
       httpStatus = exception.getStatus();
@@ -35,7 +36,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       if (typeof response === 'object' && response !== null) {
         const responseObj = response as HttpExceptionResponse;
         message = responseObj.message;
-        details = responseObj.error || null;
+        details = responseObj.errors || responseObj.error || null;
       } else {
         message = String(response);
       }

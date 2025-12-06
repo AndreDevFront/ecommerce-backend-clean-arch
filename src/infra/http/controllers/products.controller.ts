@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
   Param,
   Patch,
   Post,
@@ -9,23 +11,28 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+
 import { CreateProductUseCase } from 'src/application/use-cases/create-product.use-case';
+
+import { DeleteProductUseCase } from 'src/application/use-cases/delete-product.use-case';
+
+import { EditProductUseCase } from 'src/application/use-cases/edit-product.use-case';
+import { ListProductsUseCase } from 'src/application/use-cases/list-products.use-case';
+
+import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
 import {
   CreateProductSchema,
   type CreateProductDto,
 } from './schemas/create-product.schema';
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
-import {
-  type ListProductsDto,
-  ListProductsSchema,
-} from './schemas/list-products.schema';
-import { ListProductsUseCase } from 'src/application/use-cases/list-products.use-case';
-import { AuthGuard } from '@nestjs/passport';
 import {
   EditProductSchema,
   type EditProductDto,
 } from './schemas/edit-product.schema';
-import { EditProductUseCase } from 'src/application/use-cases/edit-product.use-case';
+import {
+  ListProductsSchema,
+  type ListProductsDto,
+} from './schemas/list-products.schema';
 
 @Controller('products')
 export class ProductsController {
@@ -33,6 +40,7 @@ export class ProductsController {
     private createProductUseCase: CreateProductUseCase,
     private listProductsUseCase: ListProductsUseCase,
     private editProductUseCase: EditProductUseCase,
+    private deleteProductUseCase: DeleteProductUseCase,
   ) {}
 
   @Post()
@@ -71,5 +79,14 @@ export class ProductsController {
     });
 
     return { product };
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
+  @HttpCode(204)
+  async delete(@Param('id') id: string) {
+    await this.deleteProductUseCase.execute({
+      productId: id,
+    });
   }
 }
