@@ -47,4 +47,17 @@ export class EnvService {
   get getAwsBucketPublicUrl() {
     return this.configService.get('AWS_BUCKET_PUBLIC_URL', { infer: true });
   }
+
+  get getSmtpHost() {
+    return this.configService.get('SMTP_HOST', { infer: true });
+  }
+  get getSmtpPort() {
+    return this.configService.get('SMTP_PORT', { infer: true });
+  }
+  get getSmtpUser() {
+    return this.configService.get('SMTP_USER', { infer: true });
+  }
+  get getSmtpPass() {
+    return this.configService.get('SMTP_PASS', { infer: true });
+  }
 }

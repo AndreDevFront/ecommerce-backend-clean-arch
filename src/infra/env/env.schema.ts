@@ -1,5 +1,11 @@
 import { z } from 'zod';
 
+enum NodeEnv {
+  development = 'development',
+  test = 'test',
+  production = 'production',
+}
+
 export const envSchema = z.object({
   DATABASE_URL: z.string().startsWith('postgresql://'),
   PORT: z.coerce.number().positive().default(3000),
@@ -10,9 +16,11 @@ export const envSchema = z.object({
   AWS_REGION: z.string().default('us-east-1'),
   AWS_ENDPOINT: z.url(),
   AWS_BUCKET_PUBLIC_URL: z.url(),
-  NODE_ENV: z
-    .enum(['development', 'test', 'production'])
-    .default('development'),
+  NODE_ENV: z.enum(Object.values(NodeEnv)).default(NodeEnv.development),
+  SMTP_HOST: z.string(),
+  SMTP_PORT: z.coerce.number(),
+  SMTP_USER: z.email(),
+  SMTP_PASS: z.string(),
 });
 
 export const databaseSchema = z.object({

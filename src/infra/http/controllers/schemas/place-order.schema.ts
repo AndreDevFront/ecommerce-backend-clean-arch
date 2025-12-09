@@ -2,14 +2,6 @@ import { z } from 'zod';
 
 export class PlaceOrderSchema {
   static schema = z.object({
-    customerInfo: z.object({
-      name: z.string().min(3, { message: 'Nome deve ter no mínimo 3 letras' }),
-      email: z.email({ message: 'E-mail inválido' }),
-      address: z.string().min(5, { message: 'Endereço muito curto' }),
-      city: z.string().min(2, { message: 'Cidade inválida' }),
-      zipCode: z.string().min(5, { message: 'CEP inválido' }),
-    }),
-
     items: z
       .array(
         z.object({
@@ -21,6 +13,12 @@ export class PlaceOrderSchema {
         }),
       )
       .min(1, { message: 'O pedido deve ter pelo menos 1 item' }),
+
+    shippingAddress: z.object({
+      street: z.string().min(3, { message: 'Rua deve ter no mínimo 3 letras' }),
+      city: z.string().min(2, { message: 'Cidade inválida' }),
+      zipCode: z.string().min(8, { message: 'CEP deve ter 8 dígitos' }),
+    }),
   });
 }
 

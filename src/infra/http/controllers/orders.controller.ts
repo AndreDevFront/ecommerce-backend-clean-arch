@@ -1,20 +1,40 @@
-import { Body, Controller, Post, UsePipes } from '@nestjs/common';
-import { PlaceOrderUseCase } from 'src/application/use-cases/place-order.use-case';
+import {
+  Body,
+  Controller,
+  Post,
+  Req,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { CreateOrderUseCase } from 'src/application/use-cases/create-order.use-case';
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
-import { PlaceOrderSchema } from './schemas/place-order.schema';
-import type { PlaceOrderDto } from './schemas/place-order.schema';
 import { OrderPresenter } from '../presenters/order.presenter';
+import {
+  type PlaceOrderDto,
+  PlaceOrderSchema,
+} from './schemas/place-order.schema';
+
+interface AuthenticatedRequest {
+  user: {
+    sub: string;
+  };
+}
 
 @Controller('orders')
 export class OrdersController {
-  constructor(private placeOrderUseCase: PlaceOrderUseCase) {}
+  constructor(private createOrderUseCase: CreateOrderUseCase) {}
 
   @Post()
+  @UseGuards(AuthGuard('jwt'))
   @UsePipes(new ZodValidationPipe(PlaceOrderSchema.schema))
-  async create(@Body() body: PlaceOrderDto) {
-    const order = await this.placeOrderUseCase.execute({
-      customerInfo: body.customerInfo,
+  async create(@Body() body: PlaceOrderDto, @Req() req: AuthenticatedRequest) {
+    const userId = req.user.sub;
+
+    const order = await this.createOrderUseCase.execute({
+      customerId: userId,
       items: body.items,
+      shippingAddress: body.shippingAddress,
     });
 
     return { order: OrderPresenter.toHTTP(order) };
