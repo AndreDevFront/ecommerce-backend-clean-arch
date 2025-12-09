@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { ConflictException } from 'src/core/exceptions/conflict.exception';
 import { Product } from 'src/domain/entities/product.entity';
 import { ProductRepository } from 'src/domain/repositories/product-repository.interface';
-import { ConflictException } from 'src/core/exceptions/conflict.exception';
 
 interface CreateProductRequest {
   name: string;
@@ -10,6 +10,7 @@ interface CreateProductRequest {
   price: number;
   stock: number;
   attributes?: Record<string, any>;
+  image?: string | null;
 }
 
 @Injectable()
@@ -31,6 +32,7 @@ export class CreateProductUseCase {
       stock: request.stock,
       attributes: request.attributes || {},
       isActive: true,
+      image: request.image || null,
     });
 
     await this.productRepository.create(product);

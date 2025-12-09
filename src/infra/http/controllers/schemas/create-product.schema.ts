@@ -8,6 +8,7 @@ export class CreateProductSchema {
     price: z.number(),
     stock: z.number(),
     attributes: z.record(z.string(), z.any()).optional(),
+    image: z.string().optional().nullable(),
   });
 }
 

@@ -1,8 +1,8 @@
 import {
-  Entity,
   Column,
-  PrimaryColumn,
   CreateDateColumn,
+  Entity,
+  PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -45,4 +45,7 @@ export class ProductSchema {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Column({ nullable: true })
+  image: string;
 }

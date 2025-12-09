@@ -11,6 +11,7 @@ export type ProductProps = {
   attributes: Record<string, any>;
   createdAt?: Date;
   updatedAt?: Date;
+  image?: string | null;
 };
 
 export class Product {
@@ -24,6 +25,7 @@ export class Product {
       attributes: props.attributes ?? {},
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? new Date(),
+      image: props.image ?? null,
     };
   }
 
@@ -71,5 +73,9 @@ export class Product {
     Object.assign(this._props, params);
 
     this._props.updatedAt = new Date();
+  }
+
+  get image() {
+    return this._props.image;
   }
 }

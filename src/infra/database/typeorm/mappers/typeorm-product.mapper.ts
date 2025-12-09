@@ -14,6 +14,7 @@ export class TypeOrmProductMapper {
       attributes: raw.attributes,
       createdAt: raw.createdAt,
       updatedAt: raw.updatedAt,
+      image: raw.image,
     });
   }
 
@@ -29,6 +30,7 @@ export class TypeOrmProductMapper {
       attributes: product.attributes,
       createdAt: product.createdAt,
       updatedAt: product.updatedAt,
+      image: product.image,
     } as ProductSchema;
   }
 }

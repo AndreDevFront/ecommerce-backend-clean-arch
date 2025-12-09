@@ -54,6 +54,7 @@ export class ProductsController {
       price: body.price,
       stock: body.stock,
       attributes: body.attributes,
+      image: body.image,
     });
     return product;
   }

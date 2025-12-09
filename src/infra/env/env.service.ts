@@ -23,4 +23,28 @@ export class EnvService {
   get getJwtSecret() {
     return this.configService.get('JWT_PRIVATE_KEY', { infer: true });
   }
+
+  get getAwsAccessKeyId() {
+    return this.configService.get('AWS_ACCESS_KEY_ID', { infer: true });
+  }
+
+  get getAwsBucketName() {
+    return this.configService.get('AWS_BUCKET_NAME', { infer: true });
+  }
+
+  get getAwsSecretAccessKey() {
+    return this.configService.get('AWS_SECRET_ACCESS_KEY', { infer: true });
+  }
+
+  get getAwsRegion() {
+    return this.configService.get('AWS_REGION', { infer: true });
+  }
+
+  get getAwsEndpoint() {
+    return this.configService.get('AWS_ENDPOINT', { infer: true });
+  }
+
+  get getAwsBucketPublicUrl() {
+    return this.configService.get('AWS_BUCKET_PUBLIC_URL', { infer: true });
+  }
 }

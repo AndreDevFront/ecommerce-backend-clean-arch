@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ProductRepository } from 'src/domain/repositories/product-repository.interface';
-import { ResourceNotFoundException } from 'src/core/exceptions/resource-not-found.exception';
 import { ConflictException } from 'src/core/exceptions/conflict.exception';
+import { ResourceNotFoundException } from 'src/core/exceptions/resource-not-found.exception';
 import { Product } from 'src/domain/entities/product.entity';
+import { ProductRepository } from 'src/domain/repositories/product-repository.interface';
 
 interface EditProductRequest {
   productId: string;
@@ -13,6 +13,7 @@ interface EditProductRequest {
   stock?: number;
   attributes?: Record<string, any>;
   isActive?: boolean;
+  image?: string | null;
 }
 
 @Injectable()

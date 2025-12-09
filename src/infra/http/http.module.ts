@@ -6,19 +6,23 @@ import { DeleteProductUseCase } from 'src/application/use-cases/delete-product.u
 import { EditProductUseCase } from 'src/application/use-cases/edit-product.use-case';
 import { ListProductsUseCase } from 'src/application/use-cases/list-products.use-case';
 import { PlaceOrderUseCase } from 'src/application/use-cases/place-order.use-case';
+import { UploadImageUseCase } from 'src/application/use-cases/upload-image.use-case';
 import { DatabaseModule } from '../database/database.module';
+import { StorageModule } from '../storage/storage.module';
 import { AuthenticateController } from './controllers/authenticate.controller';
 import { OrdersController } from './controllers/orders.controller';
 import { ProductsController } from './controllers/products.controller';
+import { UploadController } from './controllers/upload.controller';
 import { UsersController } from './controllers/users.controller';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, StorageModule],
   controllers: [
     ProductsController,
     UsersController,
     AuthenticateController,
     OrdersController,
+    UploadController,
   ],
   providers: [
     CreateProductUseCase,
@@ -28,6 +32,7 @@ import { UsersController } from './controllers/users.controller';
     PlaceOrderUseCase,
     EditProductUseCase,
     DeleteProductUseCase,
+    UploadImageUseCase,
   ],
 })
 export class HttpModule {}
