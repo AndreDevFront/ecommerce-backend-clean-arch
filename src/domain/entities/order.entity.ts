@@ -71,4 +71,9 @@ export class Order {
     this._props.status = 'PAID';
     this._props.updatedAt = new Date();
   }
+
+  public cancel() {
+    this._props.status = 'CANCELED';
+    this._props.updatedAt = new Date();
+  }
 }
