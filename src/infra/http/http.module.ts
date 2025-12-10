@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ApproveOrderUseCase } from 'src/application/use-cases/approve-order.use-case';
 import { AuthenticateUserUseCase } from 'src/application/use-cases/authenticate-user.use-case';
 import { CreateOrderUseCase } from 'src/application/use-cases/create-order.use-case';
 import { CreateProductUseCase } from 'src/application/use-cases/create-product.use-case';
@@ -11,6 +12,7 @@ import { DatabaseModule } from '../database/database.module';
 import { SendOrderEmailListener } from '../listeners/send-order-email.listener';
 import { MailModule } from '../mail/mail.module';
 import { StorageModule } from '../storage/storage.module';
+import { ApproveOrderController } from './controllers/approve-order.controller';
 import { AuthenticateController } from './controllers/authenticate.controller';
 import { OrdersController } from './controllers/orders.controller';
 import { ProductsController } from './controllers/products.controller';
@@ -25,6 +27,7 @@ import { UsersController } from './controllers/users.controller';
     AuthenticateController,
     OrdersController,
     UploadController,
+    ApproveOrderController,
   ],
   providers: [
     CreateProductUseCase,
@@ -36,6 +39,7 @@ import { UsersController } from './controllers/users.controller';
     DeleteProductUseCase,
     UploadImageUseCase,
     SendOrderEmailListener,
+    ApproveOrderUseCase,
   ],
 })
 export class HttpModule {}

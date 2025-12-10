@@ -66,4 +66,9 @@ export class Order {
     this._props.status = 'PAID';
     this._props.updatedAt = new Date();
   }
+
+  public approve() {
+    this._props.status = 'PAID';
+    this._props.updatedAt = new Date();
+  }
 }
