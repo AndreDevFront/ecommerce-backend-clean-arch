@@ -1,98 +1,140 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🛍️ E-commerce API (Clean Architecture)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Uma API RESTful robusta e escalável para E-commerce, construída com princípios de **Clean Architecture**, **DDD (Domain-Driven Design)** e **SOLID**.
+Desenvolvida para ser agnóstica ao produto (White Label), servindo desde lojas de velas artesanais até vestuário.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Tecnologias & Stack
 
-## Description
+- **Framework:** [NestJS](https://nestjs.com/)
+- **Linguagem:** TypeScript
+- **Banco de Dados:** PostgreSQL
+- **ORM:** TypeORM
+- **Autenticação:** JWT (Passport Strategy)
+- **Validação:** Zod
+- **Storage:** Cloudflare R2 (Compatível com AWS S3)
+- **Eventos:** EventEmitter2 (Arquitetura orientada a eventos)
+- **Email:** Nodemailer
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🏛️ Arquitetura
 
-## Project setup
+O projeto segue estritamente a separação de camadas:
 
-```bash
-$ npm install
-```
+- **src/domain**: O coração do software. Contém as Entidades e Interfaces dos Repositórios. Zero dependências externas.
+- **src/application**: Casos de uso (Use Cases) que orquestram a lógica de negócio.
+- **src/infra**: Implementações concretas (Banco de Dados, Controllers HTTP, Gateways de Email, Storage).
 
-## Compile and run the project
+## ✨ Funcionalidades
 
-```bash
-# development
-$ npm run start
+### 🔐 Autenticação
 
-# watch mode
-$ npm run start:dev
+- Criação de Conta e Login (JWT).
+- Proteção de rotas via Guards.
 
-# production mode
-$ npm run start:prod
-```
+### 📦 Catálogo de Produtos
 
-## Run tests
+- CRUD completo (Criar, Listar, Editar, Remover).
+- Upload de imagens integrado ao Cloudflare R2.
+- Atributos dinâmicos (flexibilidade para diferentes nichos).
+- Vitrine pública e gestão administrativa.
 
-```bash
-# unit tests
-$ npm run test
+### 🛒 Gestão de Pedidos
 
-# e2e tests
-$ npm run test:e2e
+- Criação de pedido com validação de estoque.
+- Cálculo automático de totais.
+- Fluxo de status: `PENDING` → `PAID` ou `CANCELED`.
+- Listagem de pedidos recentes (Admin).
 
-# test coverage
-$ npm run test:cov
-```
+### 📧 Notificações
 
-## Deployment
+- Sistema desacoplado de Listeners.
+- Disparo automático de e-mail na criação do pedido (para o cliente e para o lojista).
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## 🛠️ Como Rodar Localmente
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Pré-requisitos
+
+- Node.js (v18+)
+- Docker (Opcional, para rodar o PostgreSQL)
+
+### Passo a Passo
+
+1. **Clone o repositório**
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+git clone [https://github.com/andredevfront/nome-do-repo.git](https://github.com/andredevfront/nome-do-repo.git)
+cd nome-do-repo
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+2. **Instale as dependências:**
 
-## Resources
+```bash
+npm install
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+3. Configure as Variáveis de Ambiente Crie um arquivo .env na raiz do projeto. Copie o modelo abaixo e preencha com seus dados:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# 🐘 Banco de Dados
 
-## Support
+DATABASE_URL="postgresql://docker:docker@localhost:5432/velas_db"
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+# 🔐 Autenticação (JWT RS256)
 
-## Stay in touch
+# Gere chaves base64 reais para produção
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+JWT_PRIVATE_KEY="sua_chave_privada_base64"
+JWT_PUBLIC_KEY="sua_chave_publica_base64"
 
-## License
+# ☁️ Cloudflare R2 / AWS S3 (Storage)
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+CLOUDFLARE_ACCOUNT_ID="seu_account_id"
+AWS_ACCESS_KEY_ID="sua_access_key"
+AWS_SECRET_ACCESS_KEY="sua_secret_key"
+AWS_BUCKET_NAME="nome-do-bucket"
+
+# 📧 Email (SMTP - Gmail ou Ethereal)
+
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT=587
+SMTP_USER="seu@email.com"
+SMTP_PASS="senha_de_app_gerada"
+
+4. **Suba o Banco de Dados (Via Docker) Se não tiver o Postgres instalado localmente, use este comando para subir um container pronto:**
+
+´´´bash
+
+docker run --name pg-ecommerce -e POSTGRES_PASSWORD=docker -e POSTGRES_USER=docker -e POSTGRES_DB=store_db -p 5432:5432 -d postgres
+Rode o Servidor
+´´´
+
+´´´bash
+docker exec -it pg-ecommerce psql -U docker -d store_db
+´´´
+´´´bash
+npm run start:dev
+´´´
+
+5. ## 📁 Estrutura do Projeto
+   src/
+   ├── application/ # Regras de negócio (Use Cases)
+   │ └── use-cases/ # Ex: create-order, get-product...
+   ├── domain/ # Entidades, Eventos e Contratos
+   │ ├── entities/ # Ex: Product, Order, User
+   │ ├── events/ # Ex: order-created.event.ts
+   │ └── repositories/ # Interfaces (Contratos)
+   └── infra/ # Implementações concretas e Framework
+   ├── database/ # TypeORM, Mappers
+   ├── http/ # Controllers, Presenters, DTOs (Zod)
+   ├── env/ # Configuração de ambiente (Zod)
+   └── listeners/ # Ouvintes de eventos (Envio de Email)
+
+## 📝 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## ✍️ Autor
+
+André Luz da Silva - [andreluzdasilva10@gmail.com](mailto:andreluzdasilva10@gmail.com)
+
+---
+
+⌨️ com ❤️ por [AndreDevFront](https://github.com/AndreDevFront)
