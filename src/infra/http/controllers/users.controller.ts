@@ -1,9 +1,9 @@
 import { Body, Controller, Post, UsePipes } from '@nestjs/common';
 import { CreateUserUseCase } from 'src/application/use-cases/create-user.use-case';
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
-import { CreateUserSchema } from './schemas/create-user.schema';
-import type { CreateUserDto } from './schemas/create-user.schema'; // Import type!
 import { UserPresenter } from '../presenters/user.presenter';
+import type { CreateUserDto } from './schemas/create-user.schema';
+import { CreateUserSchema } from './schemas/create-user.schema';
 
 @Controller('users')
 export class UsersController {

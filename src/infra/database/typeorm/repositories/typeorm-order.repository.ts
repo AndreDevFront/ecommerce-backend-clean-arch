@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from 'src/domain/entities/order.entity';
-import { OrderRepository } from 'src/domain/repositories/order-repository.interface';
+import {
+  FindManyRecentProps,
+  OrderRepository,
+} from 'src/domain/repositories/order-repository.interface';
 import { Repository } from 'typeorm';
 import { OrderSchema } from '../entities/order.schema';
 import { TypeOrmOrderMapper } from '../mappers/typeorm-order.mapper';
@@ -12,6 +15,17 @@ export class TypeOrmOrderRepository implements OrderRepository {
     @InjectRepository(OrderSchema)
     private typeOrmRepo: Repository<OrderSchema>,
   ) {}
+
+  async findManyRecent({ page }: FindManyRecentProps): Promise<Order[]> {
+    const orders = await this.typeOrmRepo.find({
+      order: { createdAt: 'DESC' },
+      take: 20,
+      skip: (page - 1) * 20,
+      relations: ['items'],
+    });
+
+    return orders.map((order) => TypeOrmOrderMapper.toDomain(order));
+  }
 
   async findById(id: string): Promise<Order | null> {
     const order = await this.typeOrmRepo.findOne({

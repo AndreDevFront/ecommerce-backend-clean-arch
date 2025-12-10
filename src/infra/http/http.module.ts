@@ -7,6 +7,7 @@ import { CreateProductUseCase } from 'src/application/use-cases/create-product.u
 import { CreateUserUseCase } from 'src/application/use-cases/create-user.use-case';
 import { DeleteProductUseCase } from 'src/application/use-cases/delete-product.use-case';
 import { EditProductUseCase } from 'src/application/use-cases/edit-product.use-case';
+import { FetchRecentOrdersUseCase } from 'src/application/use-cases/fetch-recent-orders.use-case';
 import { ListProductsUseCase } from 'src/application/use-cases/list-products.use-case';
 import { UploadImageUseCase } from 'src/application/use-cases/upload-image.use-case';
 import { DatabaseModule } from '../database/database.module';
@@ -16,6 +17,7 @@ import { StorageModule } from '../storage/storage.module';
 import { ApproveOrderController } from './controllers/approve-order.controller';
 import { AuthenticateController } from './controllers/authenticate.controller';
 import { CancelOrderController } from './controllers/cancel-order.controller';
+import { FetchRecentOrdersController } from './controllers/fetch-recent-orders.controller';
 import { OrdersController } from './controllers/orders.controller';
 import { ProductsController } from './controllers/products.controller';
 import { UploadController } from './controllers/upload.controller';
@@ -31,6 +33,7 @@ import { UsersController } from './controllers/users.controller';
     UploadController,
     ApproveOrderController,
     CancelOrderController,
+    FetchRecentOrdersController,
   ],
   providers: [
     CreateProductUseCase,
@@ -44,6 +47,7 @@ import { UsersController } from './controllers/users.controller';
     SendOrderEmailListener,
     ApproveOrderUseCase,
     CancelOrderUseCase,
+    FetchRecentOrdersUseCase,
   ],
 })
 export class HttpModule {}
