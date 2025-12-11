@@ -21,6 +21,7 @@ import { EditProductUseCase } from 'src/application/use-cases/edit-product.use-c
 import { ListProductsUseCase } from 'src/application/use-cases/list-products.use-case';
 
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
+import { ProductPresenter } from '../presenters/product.presenter';
 import {
   CreateProductSchema,
   type CreateProductDto,
@@ -56,7 +57,7 @@ export class ProductsController {
       attributes: body.attributes,
       image: body.image,
     });
-    return product;
+    return { product: ProductPresenter.toHTTP(product) };
   }
 
   @Get()
@@ -67,7 +68,10 @@ export class ProductsController {
       perPage: query.perPage,
     });
 
-    return result;
+    return {
+      data: result.data.map((product) => ProductPresenter.toHTTP(product)),
+      meta: result.meta,
+    };
   }
 
   @Patch(':id')
@@ -79,7 +83,7 @@ export class ProductsController {
       ...body,
     });
 
-    return { product };
+    return { product: ProductPresenter.toHTTP(product) };
   }
 
   @Delete(':id')
