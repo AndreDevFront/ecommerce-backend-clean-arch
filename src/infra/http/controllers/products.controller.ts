@@ -20,6 +20,7 @@ import { DeleteProductUseCase } from 'src/application/use-cases/delete-product.u
 import { EditProductUseCase } from 'src/application/use-cases/edit-product.use-case';
 import { ListProductsUseCase } from 'src/application/use-cases/list-products.use-case';
 
+import { GetProductBySlugUseCase } from 'src/application/use-cases/get-product-by-slug.use-case';
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
 import { ProductPresenter } from '../presenters/product.presenter';
 import {
@@ -42,6 +43,7 @@ export class ProductsController {
     private listProductsUseCase: ListProductsUseCase,
     private editProductUseCase: EditProductUseCase,
     private deleteProductUseCase: DeleteProductUseCase,
+    private getProductBySlugUseCase: GetProductBySlugUseCase,
   ) {}
 
   @Post()
@@ -93,5 +95,14 @@ export class ProductsController {
     await this.deleteProductUseCase.execute({
       productId: id,
     });
+  }
+
+  @Get('slug/:slug')
+  async getBySlug(@Param('slug') slug: string) {
+    const product = await this.getProductBySlugUseCase.execute({
+      slug,
+    });
+
+    return { product: ProductPresenter.toHTTP(product) };
   }
 }
