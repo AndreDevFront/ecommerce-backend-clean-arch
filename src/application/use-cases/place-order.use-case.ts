@@ -1,9 +1,9 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
-import { Order } from 'src/domain/entities/order.entity';
-import { OrderItem } from 'src/domain/entities/order-item.entity';
-import { ProductRepository } from 'src/domain/repositories/product-repository.interface';
-import { OrderRepository } from 'src/domain/repositories/order-repository.interface';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ResourceNotFoundException } from 'src/core/exceptions/resource-not-found.exception';
+import { OrderItem } from 'src/domain/entities/order-item.entity';
+import { Order } from 'src/domain/entities/order.entity';
+import { OrderRepository } from 'src/domain/repositories/order-repository.interface';
+import { ProductRepository } from 'src/domain/repositories/product-repository.interface';
 
 export interface PlaceOrderInput {
   customerId?: string;
@@ -62,7 +62,7 @@ export class PlaceOrderUseCase {
     }
 
     const order = new Order({
-      customerId: input.customerId,
+      customerId: input.customerId ?? undefined,
       customerInfo: input.customerInfo,
       items: orderItems,
     });

@@ -1,40 +1,33 @@
-import {
-  Body,
-  Controller,
-  Post,
-  Req,
-  UseGuards,
-  UsePipes,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { CreateOrderUseCase } from 'src/application/use-cases/create-order.use-case';
+import { Body, Controller, Post, UsePipes } from '@nestjs/common';
+
+import { PlaceOrderUseCase } from 'src/application/use-cases/place-order.use-case';
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
 import { OrderPresenter } from '../presenters/order.presenter';
 import {
-  type PlaceOrderDto,
-  PlaceOrderSchema,
-} from './schemas/place-order.schema';
-
-interface AuthenticatedRequest {
-  user: {
-    sub: string;
-  };
-}
+  type CreateOrderDto,
+  createOrderSchema,
+} from './schemas/create-order.schema';
 
 @Controller('orders')
 export class OrdersController {
-  constructor(private createOrderUseCase: CreateOrderUseCase) {}
+  constructor(private placeOrderUseCase: PlaceOrderUseCase) {}
 
   @Post()
-  @UseGuards(AuthGuard('jwt'))
-  @UsePipes(new ZodValidationPipe(PlaceOrderSchema.schema))
-  async create(@Body() body: PlaceOrderDto, @Req() req: AuthenticatedRequest) {
-    const userId = req.user.sub;
+  @UsePipes(new ZodValidationPipe(createOrderSchema))
+  async create(@Body() body: CreateOrderDto) {
+    const formattedAddress = `${body.address.street}, ${body.address.number} - ${body.address.neighborhood}`;
+    const formattedCity = `${body.address.city}/${body.address.state}`;
 
-    const order = await this.createOrderUseCase.execute({
-      customerId: userId,
+    const order = await this.placeOrderUseCase.execute({
+      customerId: undefined,
+      customerInfo: {
+        name: body.name,
+        email: body.email,
+        address: formattedAddress,
+        city: formattedCity,
+        zipCode: body.address.zipCode,
+      },
       items: body.items,
-      shippingAddress: body.shippingAddress,
     });
 
     return { order: OrderPresenter.toHTTP(order) };
