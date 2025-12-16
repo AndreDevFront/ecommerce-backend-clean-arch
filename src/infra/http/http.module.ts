@@ -11,6 +11,7 @@ import { FetchRecentOrdersUseCase } from 'src/application/use-cases/fetch-recent
 import { GetProductBySlugUseCase } from 'src/application/use-cases/get-product-by-slug.use-case';
 import { GetProductUseCase } from 'src/application/use-cases/get-product.use-case';
 import { ListProductsUseCase } from 'src/application/use-cases/list-products.use-case';
+import { PlaceOrderUseCase } from 'src/application/use-cases/place-order.use-case';
 import { UploadImageUseCase } from 'src/application/use-cases/upload-image.use-case';
 import { DatabaseModule } from '../database/database.module';
 import { SendOrderEmailListener } from '../listeners/send-order-email.listener';
@@ -56,6 +57,7 @@ import { UsersController } from './controllers/users.controller';
     FetchRecentOrdersUseCase,
     GetProductUseCase,
     GetProductBySlugUseCase,
+    PlaceOrderUseCase,
   ],
 })
 export class HttpModule {}
