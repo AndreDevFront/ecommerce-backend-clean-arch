@@ -86,7 +86,12 @@ export class CreateOrderUseCase {
 
     this.eventEmitter.emit(
       'order.created',
-      new OrderCreatedEvent(order.id!, customer.email, order.total),
+      new OrderCreatedEvent(
+        order.id!,
+        customer.email,
+        order.total,
+        order.paymentMethod,
+      ),
     );
 
     return order;
