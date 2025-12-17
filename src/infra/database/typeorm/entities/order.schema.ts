@@ -41,6 +41,9 @@ export class OrderSchema {
   })
   items: OrderItemSchema[];
 
+  @Column({ default: 'card' })
+  paymentMethod: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

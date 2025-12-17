@@ -1,7 +1,7 @@
-import { Order, OrderStatus } from 'src/domain/entities/order.entity';
 import { OrderItem } from 'src/domain/entities/order-item.entity';
-import { OrderSchema } from '../entities/order.schema';
+import { Order, OrderStatus } from 'src/domain/entities/order.entity';
 import { OrderItemSchema } from '../entities/order-item.schema';
+import { OrderSchema } from '../entities/order.schema';
 
 export class TypeOrmOrderMapper {
   static toDomain(raw: OrderSchema): Order {
@@ -22,6 +22,7 @@ export class TypeOrmOrderMapper {
       items: items,
       createdAt: raw.createdAt,
       updatedAt: raw.updatedAt,
+      paymentMethod: raw.paymentMethod as 'pix' | 'card',
     });
   }
 
@@ -44,6 +45,7 @@ export class TypeOrmOrderMapper {
       items: itemsSchema,
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
+      paymentMethod: order.paymentMethod,
     } as OrderSchema;
   }
 }

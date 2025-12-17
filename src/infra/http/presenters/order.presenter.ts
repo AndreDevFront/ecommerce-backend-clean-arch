@@ -1,5 +1,5 @@
-import { Order } from 'src/domain/entities/order.entity';
 import { OrderItem } from 'src/domain/entities/order-item.entity';
+import { Order } from 'src/domain/entities/order.entity';
 
 export class OrderPresenter {
   static toHTTP(order: Order) {
@@ -10,6 +10,7 @@ export class OrderPresenter {
       customer: order.customerInfo,
       items: order.items.map((item) => OrderPresenter.toHTTPItem(item)),
       createdAt: order.createdAt,
+      paymentMedthod: order.paymentMethod,
     };
   }
 

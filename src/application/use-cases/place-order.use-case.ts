@@ -18,6 +18,7 @@ export interface PlaceOrderInput {
     productId: string;
     quantity: number;
   }[];
+  paymentMethod: 'card' | 'pix';
 }
 
 @Injectable()
@@ -65,6 +66,7 @@ export class PlaceOrderUseCase {
       customerId: input.customerId ?? undefined,
       customerInfo: input.customerInfo,
       items: orderItems,
+      paymentMethod: input.paymentMethod,
     });
 
     await this.orderRepository.create(order);

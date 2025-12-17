@@ -16,7 +16,7 @@ export class OrdersController {
   @UsePipes(new ZodValidationPipe(createOrderSchema))
   async create(@Body() body: CreateOrderDto) {
     const formattedAddress = `${body.address.street}, ${body.address.number} - ${body.address.neighborhood}`;
-    const formattedCity = `${body.address.city}/${body.address.state}`;
+    const formattedCity = `${body.address.city}/${body.address.state.toUpperCase()}`;
 
     const order = await this.placeOrderUseCase.execute({
       customerId: undefined,
@@ -28,6 +28,7 @@ export class OrdersController {
         zipCode: body.address.zipCode,
       },
       items: body.items,
+      paymentMethod: body.paymentMethod,
     });
 
     return { order: OrderPresenter.toHTTP(order) };

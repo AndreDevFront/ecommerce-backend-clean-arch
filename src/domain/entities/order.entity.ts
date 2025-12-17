@@ -17,18 +17,21 @@ export type OrderProps = {
   customerInfo: CustomerInfo;
   items: OrderItem[];
   status?: OrderStatus;
+  paymentMethod: 'card' | 'pix';
   createdAt?: Date;
   updatedAt?: Date;
 };
 
 export class Order {
   private _props: OrderProps;
+  public paymentMethod: 'card' | 'pix';
 
   constructor(props: OrderProps) {
     this._props = {
       ...props,
       id: props.id ?? randomUUID(),
       status: props.status ?? 'PENDING',
+      paymentMethod: props.paymentMethod ?? 'card',
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? new Date(),
     };
