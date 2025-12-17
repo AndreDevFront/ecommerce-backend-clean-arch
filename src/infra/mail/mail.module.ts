@@ -14,7 +14,7 @@ import { NodemailerGateway } from './nodemailer.gateway';
       inject: [EnvService],
       useFactory: (env: EnvService) => {
         const port = Number(env.getSmtpPort);
-        const isSecure = port === 465;
+        const isSecure = port === 587;
 
         console.log(
           `📧 Configurando Email -> Porta: ${port} | Secure: ${isSecure}`,
@@ -34,8 +34,9 @@ import { NodemailerGateway } from './nodemailer.gateway';
               rejectUnauthorized: false,
             },
 
-            connectionTimeout: 10000,
-            greetingTimeout: 10000,
+            connectionTimeout: 20000,
+            greetingTimeout: 20000,
+            socketTimeout: 20000,
           },
           defaults: {
             from: `"Velas API" <${env.getSmtpUser}>`,
