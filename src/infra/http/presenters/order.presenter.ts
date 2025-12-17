@@ -10,7 +10,7 @@ export class OrderPresenter {
       customer: order.customerInfo,
       items: order.items.map((item) => OrderPresenter.toHTTPItem(item)),
       createdAt: order.createdAt,
-      paymentMedthod: order.paymentMethod,
+      paymentMethod: order.paymentMethod,
     };
   }
 
