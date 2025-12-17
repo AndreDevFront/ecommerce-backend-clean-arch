@@ -16,10 +16,13 @@ import { NodemailerGateway } from './nodemailer.gateway';
         transport: {
           host: env.getSmtpHost,
           port: env.getSmtpPort,
-          secure: false,
+          secure: env.getSmtpPort === 465,
           auth: {
             user: env.getSmtpUser,
             pass: env.getSmtpPass,
+          },
+          tls: {
+            rejectUnauthorized: false,
           },
         },
         defaults: {
