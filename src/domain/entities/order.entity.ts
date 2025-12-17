@@ -24,7 +24,6 @@ export type OrderProps = {
 
 export class Order {
   private _props: OrderProps;
-  public paymentMethod: 'card' | 'pix';
 
   constructor(props: OrderProps) {
     this._props = {
@@ -78,5 +77,9 @@ export class Order {
   public cancel() {
     this._props.status = 'CANCELED';
     this._props.updatedAt = new Date();
+  }
+
+  get paymentMethod(): 'card' | 'pix' {
+    return this._props.paymentMethod;
   }
 }
