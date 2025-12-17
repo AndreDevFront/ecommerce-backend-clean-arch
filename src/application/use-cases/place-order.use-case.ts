@@ -77,7 +77,12 @@ export class PlaceOrderUseCase {
     console.log('📢 Disparando evento de pedido criado...');
     this.eventEmitter.emit(
       'order.created',
-      new OrderCreatedEvent(order.id!, input.customerInfo.email, order.total),
+      new OrderCreatedEvent(
+        order.id!,
+        input.customerInfo.email,
+        order.total,
+        input.paymentMethod,
+      ),
     );
 
     return order;

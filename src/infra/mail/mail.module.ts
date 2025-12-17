@@ -12,23 +12,36 @@ import { NodemailerGateway } from './nodemailer.gateway';
     MailerModule.forRootAsync({
       imports: [EnvModule],
       inject: [EnvService],
-      useFactory: (env: EnvService) => ({
-        transport: {
-          host: env.getSmtpHost,
-          port: env.getSmtpPort,
-          secure: env.getSmtpPort === 465,
-          auth: {
-            user: env.getSmtpUser,
-            pass: env.getSmtpPass,
+      useFactory: (env: EnvService) => {
+        const port = Number(env.getSmtpPort);
+        const isSecure = port === 465;
+
+        console.log(
+          `📧 Configurando Email -> Porta: ${port} | Secure: ${isSecure}`,
+        );
+
+        return {
+          transport: {
+            host: env.getSmtpHost,
+            port: port,
+            secure: isSecure,
+            auth: {
+              user: env.getSmtpUser,
+              pass: env.getSmtpPass,
+            },
+            tls: {
+              ciphers: 'SSLv3',
+              rejectUnauthorized: false,
+            },
+
+            connectionTimeout: 10000,
+            greetingTimeout: 10000,
           },
-          tls: {
-            rejectUnauthorized: false,
+          defaults: {
+            from: `"Velas API" <${env.getSmtpUser}>`,
           },
-        },
-        defaults: {
-          from: `"Velas API" <${env.getSmtpUser}>`,
-        },
-      }),
+        };
+      },
     }),
   ],
   controllers: [MailController],

@@ -3,5 +3,6 @@ export class OrderCreatedEvent {
     public readonly orderId: string,
     public readonly clientEmail: string,
     public readonly totalAmount: number,
+    public readonly paymentMethod: 'card' | 'pix',
   ) {}
 }
