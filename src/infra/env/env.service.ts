@@ -15,9 +15,7 @@ export class EnvService {
   }
 
   get isDevelopment(): boolean {
-    return (
-      this.configService.get('NODE_ENV', { infer: true }) === 'development'
-    );
+    return this.configService.get('NODE_ENV', { infer: true });
   }
 
   get getJwtSecret() {
@@ -59,5 +57,13 @@ export class EnvService {
   }
   get getSmtpPass() {
     return this.configService.get('SMTP_PASS', { infer: true });
+  }
+
+  get getResendProduction() {
+    return this.configService.get('RESEND_PRODUCTION', { infer: true });
+  }
+
+  get getMailFrom() {
+    return this.configService.get('MAIL_FROM', { infer: true });
   }
 }

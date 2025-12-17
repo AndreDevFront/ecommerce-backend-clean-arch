@@ -21,6 +21,8 @@ export const envSchema = z.object({
   SMTP_PORT: z.coerce.number(),
   SMTP_USER: z.email(),
   SMTP_PASS: z.string(),
+  RESEND_PRODUCTION: z.string(),
+  MAIL_FROM: z.email(),
 });
 
 export const databaseSchema = z.object({
