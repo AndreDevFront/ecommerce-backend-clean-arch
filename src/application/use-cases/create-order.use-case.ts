@@ -79,6 +79,7 @@ export class CreateOrderUseCase {
         zipCode: shippingAddress.zipCode,
       },
       items: orderItems,
+      paymentMethod: 'card',
     });
 
     await this.orderRepository.create(order);
