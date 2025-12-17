@@ -3,6 +3,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AuthModule } from './infra/auth/auth.module';
 import { HttpModule } from './infra/http/http.module';
 import { InfraModule } from './infra/infra.module';
+import { SendOrderEmailListener } from './infra/listeners/send-order-email.listener';
 import { MailModule } from './infra/mail/mail.module';
 import { StorageModule } from './infra/storage/storage.module';
 
@@ -15,5 +16,6 @@ import { StorageModule } from './infra/storage/storage.module';
     MailModule,
     EventEmitterModule.forRoot(),
   ],
+  providers: [SendOrderEmailListener],
 })
 export class AppModule {}

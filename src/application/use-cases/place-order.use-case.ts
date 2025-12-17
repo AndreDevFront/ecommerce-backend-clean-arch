@@ -1,7 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ResourceNotFoundException } from 'src/core/exceptions/resource-not-found.exception';
 import { OrderItem } from 'src/domain/entities/order-item.entity';
 import { Order } from 'src/domain/entities/order.entity';
+import { OrderCreatedEvent } from 'src/domain/events/order-created.event';
 import { OrderRepository } from 'src/domain/repositories/order-repository.interface';
 import { ProductRepository } from 'src/domain/repositories/product-repository.interface';
 
@@ -26,6 +28,7 @@ export class PlaceOrderUseCase {
   constructor(
     private productRepository: ProductRepository,
     private orderRepository: OrderRepository,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async execute(input: PlaceOrderInput): Promise<Order> {
@@ -70,6 +73,12 @@ export class PlaceOrderUseCase {
     });
 
     await this.orderRepository.create(order);
+
+    console.log('📢 Disparando evento de pedido criado...');
+    this.eventEmitter.emit(
+      'order.created',
+      new OrderCreatedEvent(order.id!, input.customerInfo.email, order.total),
+    );
 
     return order;
   }
