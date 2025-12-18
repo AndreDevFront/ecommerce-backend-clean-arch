@@ -5,6 +5,7 @@ import { HttpModule } from './infra/http/http.module';
 import { InfraModule } from './infra/infra.module';
 import { SendOrderEmailListener } from './infra/listeners/send-order-email.listener';
 import { MailModule } from './infra/mail/mail.module';
+import { PaymentModule } from './infra/payment/payment.module';
 import { StorageModule } from './infra/storage/storage.module';
 
 @Module({
@@ -15,6 +16,7 @@ import { StorageModule } from './infra/storage/storage.module';
     StorageModule,
     MailModule,
     EventEmitterModule.forRoot(),
+    PaymentModule,
   ],
   providers: [SendOrderEmailListener],
 })

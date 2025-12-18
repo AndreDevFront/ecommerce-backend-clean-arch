@@ -1,5 +1,4 @@
 import { Body, Controller, Post, UsePipes } from '@nestjs/common';
-
 import { PlaceOrderUseCase } from 'src/application/use-cases/place-order.use-case';
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
 import { OrderPresenter } from '../presenters/order.presenter';
@@ -18,7 +17,7 @@ export class OrdersController {
     const formattedAddress = `${body.address.street}, ${body.address.number} - ${body.address.neighborhood}`;
     const formattedCity = `${body.address.city}/${body.address.state.toUpperCase()}`;
 
-    const order = await this.placeOrderUseCase.execute({
+    const result = await this.placeOrderUseCase.execute({
       customerId: undefined,
       customerInfo: {
         name: body.name,
@@ -31,6 +30,9 @@ export class OrdersController {
       paymentMethod: body.paymentMethod,
     });
 
-    return { order: OrderPresenter.toHTTP(order) };
+    return {
+      order: OrderPresenter.toHTTP(result.order),
+      payment: result.payment,
+    };
   }
 }

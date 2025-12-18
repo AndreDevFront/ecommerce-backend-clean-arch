@@ -1,13 +1,16 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ResourceNotFoundException } from 'src/core/exceptions/resource-not-found.exception';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { OrderItem } from 'src/domain/entities/order-item.entity';
 import { Order } from 'src/domain/entities/order.entity';
-import { OrderCreatedEvent } from 'src/domain/events/order-created.event';
+import { PaymentGateway } from 'src/domain/gateways/payment.gateway';
 import { OrderRepository } from 'src/domain/repositories/order-repository.interface';
 import { ProductRepository } from 'src/domain/repositories/product-repository.interface';
+import { UserRepository } from 'src/domain/repositories/user-repository.interface';
 
-export interface PlaceOrderInput {
+interface PlaceOrderRequest {
   customerId?: string;
   customerInfo: {
     name: string;
@@ -20,71 +23,91 @@ export interface PlaceOrderInput {
     productId: string;
     quantity: number;
   }[];
-  paymentMethod: 'card' | 'pix';
+  paymentMethod: 'pix' | 'card';
+}
+
+interface PlaceOrderResponse {
+  order: Order;
+  payment: {
+    transactionId: string;
+    status: string;
+    clientSecret?: string;
+    pixQrCodeUrl?: string;
+    pixCopyPaste?: string;
+  };
 }
 
 @Injectable()
 export class PlaceOrderUseCase {
   constructor(
-    private productRepository: ProductRepository,
     private orderRepository: OrderRepository,
-    private eventEmitter: EventEmitter2,
+    private productRepository: ProductRepository,
+    private userRepository: UserRepository,
+    private paymentGateway: PaymentGateway,
   ) {}
 
-  async execute(input: PlaceOrderInput): Promise<Order> {
+  async execute({
+    customerId,
+    customerInfo,
+    items,
+    paymentMethod,
+  }: PlaceOrderRequest): Promise<PlaceOrderResponse> {
+    if (customerId) {
+      const customer = await this.userRepository.findById(customerId);
+      if (!customer) throw new NotFoundException('Customer not found');
+    }
+
     const orderItems: OrderItem[] = [];
 
-    for (const itemInput of input.items) {
-      const product = await this.productRepository.findById(
-        itemInput.productId,
-      );
+    for (const item of items) {
+      const product = await this.productRepository.findById(item.productId);
 
       if (!product) {
-        throw new ResourceNotFoundException(
-          `Product ID ${itemInput.productId} not found`,
-        );
+        throw new BadRequestException(`Product ${item.productId} not found`);
       }
 
-      if (product.stock < itemInput.quantity) {
-        throw new BadRequestException(
-          `Product '${product.name}' has insufficient stock. Requested: ${itemInput.quantity}, Available: ${product.stock}`,
-        );
-      }
-
-      product.decreaseStock(itemInput.quantity);
-
-      await this.productRepository.save(product);
-
-      const orderItem = new OrderItem({
-        productId: product.id!,
-        productName: product.name,
-        price: product.price,
-        quantity: itemInput.quantity,
-      });
-
-      orderItems.push(orderItem);
+      orderItems.push(
+        new OrderItem({
+          productId: product.id!,
+          productName: product.name,
+          quantity: item.quantity,
+          price: product.price,
+        }),
+      );
     }
 
     const order = new Order({
-      customerId: input.customerId ?? undefined,
-      customerInfo: input.customerInfo,
+      customerId: customerId,
+      customerInfo: {
+        name: customerInfo.name,
+        email: customerInfo.email,
+        address: customerInfo.address,
+        city: customerInfo.city,
+        zipCode: customerInfo.zipCode,
+      },
       items: orderItems,
-      paymentMethod: input.paymentMethod,
+      paymentMethod: paymentMethod,
     });
 
     await this.orderRepository.create(order);
 
-    console.log('📢 Disparando evento de pedido criado...');
-    this.eventEmitter.emit(
-      'order.created',
-      new OrderCreatedEvent(
-        order.id!,
-        input.customerInfo.email,
-        order.total,
-        input.paymentMethod,
-      ),
-    );
+    const paymentTransaction = await this.paymentGateway.createTransaction({
+      orderId: order.id!,
+      amount: order.total,
+      paymentMethod: order.paymentMethod,
+      customerId: customerId ?? 'guest',
+      customerEmail: customerInfo.email,
+    });
 
-    return order;
+    return {
+      order,
+      payment: {
+        transactionId: paymentTransaction.transactionId,
+        status: paymentTransaction.status,
+        clientSecret: paymentTransaction.clientSecret,
+        pixQrCodeUrl: paymentTransaction.pixQrCodeUrl,
+        pixCopyPaste: paymentTransaction.pixCopyPaste,
+      },
+    };
   }
 }

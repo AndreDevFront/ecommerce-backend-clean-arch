@@ -23,6 +23,7 @@ export const envSchema = z.object({
   SMTP_PASS: z.string(),
   RESEND_PRODUCTION: z.string(),
   MAIL_FROM: z.email(),
+  STRIPE_SECRET_KEY: z.string(),
 });
 
 export const databaseSchema = z.object({

@@ -66,4 +66,8 @@ export class EnvService {
   get getMailFrom() {
     return this.configService.get('MAIL_FROM', { infer: true });
   }
+
+  get getStripeSecretKey() {
+    return this.configService.get('STRIPE_SECRET_KEY', { infer: true });
+  }
 }

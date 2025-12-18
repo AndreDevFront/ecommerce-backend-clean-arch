@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ApproveOrderUseCase } from 'src/application/use-cases/approve-order.use-case';
 import { AuthenticateUserUseCase } from 'src/application/use-cases/authenticate-user.use-case';
 import { CancelOrderUseCase } from 'src/application/use-cases/cancel-order.use-case';
-import { CreateOrderUseCase } from 'src/application/use-cases/create-order.use-case';
+
 import { CreateProductUseCase } from 'src/application/use-cases/create-product.use-case';
 import { CreateUserUseCase } from 'src/application/use-cases/create-user.use-case';
 import { DeleteProductUseCase } from 'src/application/use-cases/delete-product.use-case';
@@ -13,9 +13,12 @@ import { GetProductUseCase } from 'src/application/use-cases/get-product.use-cas
 import { ListProductsUseCase } from 'src/application/use-cases/list-products.use-case';
 import { PlaceOrderUseCase } from 'src/application/use-cases/place-order.use-case';
 import { UploadImageUseCase } from 'src/application/use-cases/upload-image.use-case';
+import { PaymentGateway } from 'src/domain/gateways/payment.gateway';
 import { DatabaseModule } from '../database/database.module';
+import { EnvModule } from '../env/env.module';
 import { SendOrderEmailListener } from '../listeners/send-order-email.listener';
 import { MailModule } from '../mail/mail.module';
+import { StripeGateway } from '../payment/stripe.gateway';
 import { StorageModule } from '../storage/storage.module';
 import { ApproveOrderController } from './controllers/approve-order.controller';
 import { AuthenticateController } from './controllers/authenticate.controller';
@@ -29,7 +32,7 @@ import { UploadController } from './controllers/upload.controller';
 import { UsersController } from './controllers/users.controller';
 
 @Module({
-  imports: [DatabaseModule, StorageModule, MailModule],
+  imports: [DatabaseModule, StorageModule, MailModule, EnvModule],
   controllers: [
     ProductsController,
     UsersController,
@@ -47,7 +50,7 @@ import { UsersController } from './controllers/users.controller';
     ListProductsUseCase,
     CreateUserUseCase,
     AuthenticateUserUseCase,
-    CreateOrderUseCase,
+
     EditProductUseCase,
     DeleteProductUseCase,
     UploadImageUseCase,
@@ -58,6 +61,10 @@ import { UsersController } from './controllers/users.controller';
     GetProductUseCase,
     GetProductBySlugUseCase,
     PlaceOrderUseCase,
+    {
+      provide: PaymentGateway,
+      useClass: StripeGateway,
+    },
   ],
 })
 export class HttpModule {}
