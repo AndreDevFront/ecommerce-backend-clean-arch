@@ -20,7 +20,6 @@ export class WebhookController {
     private env: EnvService,
     private approveOrder: ApproveOrderUseCase,
   ) {
-    // Mantive sua versão 2025-12-15.clover
     this.stripe = new Stripe(env.getStripeSecretKey, {
       apiVersion: '2025-12-15.clover',
     });
@@ -39,8 +38,6 @@ export class WebhookController {
       throw new BadRequestException('Invalid payload: No raw body found');
     }
 
-    // CORREÇÃO 2: Pegamos do getter que criamos no Passo 2
-    // Isso resolve o erro "Property 'get' does not exist"
     const webhookSecret = this.env.getStripeWebhookSecret;
 
     if (!webhookSecret) {
@@ -53,10 +50,9 @@ export class WebhookController {
       event = this.stripe.webhooks.constructEvent(
         request.rawBody,
         signature,
-        webhookSecret, // Agora é uma string garantida, resolve o erro de tipo inseguro
+        webhookSecret,
       );
     } catch (err) {
-      // CORREÇÃO 3: Tratamento seguro de erro no TypeScript (unknown type)
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       console.error(`Webhook Error: ${errorMessage}`);
       throw new BadRequestException(`Webhook Error: ${errorMessage}`);

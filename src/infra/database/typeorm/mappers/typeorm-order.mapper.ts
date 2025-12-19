@@ -5,10 +5,6 @@ import { OrderSchema } from '../entities/order.schema';
 
 export class TypeOrmOrderMapper {
   static toDomain(raw: OrderSchema): Order {
-    console.log(
-      '🔍 [MAPPER DEBUG] O que veio do banco:',
-      JSON.stringify(raw.customerInfo, null, 2),
-    );
     const items = raw.items.map((item) => {
       return new OrderItem({
         id: item.id,

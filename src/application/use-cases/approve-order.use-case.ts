@@ -7,13 +7,6 @@ interface ApproveOrderRequest {
   orderId: string;
 }
 
-type OrderWithClient = Order & {
-  client: {
-    name: string;
-    email: string;
-  };
-};
-
 @Injectable()
 export class ApproveOrderUseCase {
   constructor(
@@ -22,9 +15,7 @@ export class ApproveOrderUseCase {
   ) {}
 
   async execute({ orderId }: ApproveOrderRequest): Promise<Order> {
-    const order = (await this.orderRepository.findById(
-      orderId,
-    )) as OrderWithClient;
+    const order = await this.orderRepository.findById(orderId);
 
     if (!order) {
       throw new NotFoundException('Order not found');
@@ -34,12 +25,18 @@ export class ApproveOrderUseCase {
 
     await this.orderRepository.save(order);
 
-    if (order.client) {
+    if (order.customerInfo && order.customerInfo.email) {
+      console.log('📧 Tentando enviar email para:', order.customerInfo.email);
+
       await this.mailGateway.send({
-        to: order.client.email,
+        to: order.customerInfo.email,
         subject: 'Pagamento Aprovado! 🕯️',
-        body: `Olá ${order.client.name}, seu pagamento foi confirmado e estamos preparando suas velas!`,
+        body: `Olá ${order.customerInfo.name}, seu pagamento foi confirmado e estamos preparando suas velas!`,
       });
+    } else {
+      console.warn(
+        '⚠️ Email não enviado: customerInfo ou email faltando no pedido.',
+      );
     }
 
     return order;
