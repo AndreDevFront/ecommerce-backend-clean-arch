@@ -1,20 +1,12 @@
 import { randomUUID } from 'crypto';
+import { Customer } from '../value-objects/customer.vo';
 import { OrderItem } from './order-item.entity';
 
 export type OrderStatus = 'PENDING' | 'PAID' | 'SHIPPED' | 'CANCELED';
 
-export type CustomerInfo = {
-  name: string;
-  email: string;
-  address: string;
-  city: string;
-  zipCode: string;
-};
-
 export type OrderProps = {
   id?: string;
-  customerId?: string;
-  customerInfo: CustomerInfo;
+  customer: Customer;
   items: OrderItem[];
   status?: OrderStatus;
   paymentMethod: 'card' | 'pix';
@@ -42,8 +34,8 @@ export class Order {
   get items() {
     return this._props.items;
   }
-  get customerInfo() {
-    return this._props.customerInfo;
+  get customer(): Customer {
+    return this._props.customer;
   }
   get status() {
     return this._props.status;

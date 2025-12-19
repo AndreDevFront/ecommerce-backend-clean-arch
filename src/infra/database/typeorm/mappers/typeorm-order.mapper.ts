@@ -1,5 +1,6 @@
 import { OrderItem } from 'src/domain/entities/order-item.entity';
 import { Order, OrderStatus } from 'src/domain/entities/order.entity';
+import { Customer } from 'src/domain/value-objects/customer.vo';
 import { OrderItemSchema } from '../entities/order-item.schema';
 import { OrderSchema } from '../entities/order.schema';
 
@@ -15,10 +16,18 @@ export class TypeOrmOrderMapper {
       });
     });
 
+    const customer = new Customer(
+      raw.customerInfo.name,
+      raw.customerInfo.email,
+      raw.customerInfo.address,
+      raw.customerInfo.city,
+      raw.customerInfo.zipCode,
+    );
+
     return new Order({
       id: raw.id,
       status: raw.status as OrderStatus,
-      customerInfo: raw.customerInfo,
+      customer: customer,
       items: items,
       createdAt: raw.createdAt,
       updatedAt: raw.updatedAt,
@@ -41,7 +50,13 @@ export class TypeOrmOrderMapper {
       id: order.id,
       total: order.total,
       status: order.status,
-      customerInfo: order.customerInfo,
+      customerInfo: {
+        name: order.customer.name,
+        email: order.customer.email,
+        address: order.customer.address,
+        city: order.customer.city,
+        zipCode: order.customer.zipCode,
+      },
       items: itemsSchema,
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,

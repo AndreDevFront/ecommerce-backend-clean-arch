@@ -25,13 +25,13 @@ export class ApproveOrderUseCase {
 
     await this.orderRepository.save(order);
 
-    if (order.customerInfo && order.customerInfo.email) {
-      console.log('📧 Tentando enviar email para:', order.customerInfo.email);
+    if (order.customer && order.customer.email) {
+      console.log('📧 Tentando enviar email para:', order.customer.email);
 
       await this.mailGateway.send({
-        to: order.customerInfo.email,
+        to: order.customer.email,
         subject: 'Pagamento Aprovado! 🕯️',
-        body: `Olá ${order.customerInfo.name}, seu pagamento foi confirmado e estamos preparando suas velas!`,
+        body: `Olá ${order.customer.name}, seu pagamento foi confirmado e estamos preparando suas velas!`,
       });
     } else {
       console.warn(
