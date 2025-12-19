@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { OrderItem } from 'src/domain/entities/order-item.entity';
 import { Order } from 'src/domain/entities/order.entity';
@@ -10,19 +6,20 @@ import { OrderCreatedEvent } from 'src/domain/events/order-created.event';
 import { PaymentGateway } from 'src/domain/gateways/payment.gateway';
 import { OrderRepository } from 'src/domain/repositories/order-repository.interface';
 import { ProductRepository } from 'src/domain/repositories/product-repository.interface';
-import { UserRepository } from 'src/domain/repositories/user-repository.interface';
+import { Customer } from 'src/domain/value-objects/customer.vo';
 
 export interface CreateOrderRequest {
-  customerId: string;
-  items: {
-    productId: string;
-    quantity: number;
-  }[];
+  name: string;
+  email: string;
   shippingAddress: {
     street: string;
     city: string;
     zipCode: string;
   };
+  items: {
+    productId: string;
+    quantity: number;
+  }[];
   paymentMethod: 'pix' | 'card';
 }
 
@@ -42,21 +39,24 @@ export class CreateOrderUseCase {
   constructor(
     private orderRepository: OrderRepository,
     private productRepository: ProductRepository,
-    private userRepository: UserRepository,
     private paymentGateway: PaymentGateway,
     private eventEmitter: EventEmitter2,
   ) {}
 
   async execute({
-    customerId,
+    name,
+    email,
     items,
     shippingAddress,
     paymentMethod,
   }: CreateOrderRequest): Promise<CreateOrderResponse> {
-    const customer = await this.userRepository.findById(customerId);
-    if (!customer) {
-      throw new NotFoundException('Customer not found');
-    }
+    const customer = new Customer(
+      name,
+      email,
+      shippingAddress.street,
+      shippingAddress.city,
+      shippingAddress.zipCode,
+    );
 
     const orderItems: OrderItem[] = [];
 
@@ -84,14 +84,7 @@ export class CreateOrderUseCase {
     }
 
     const order = new Order({
-      customerId,
-      customerInfo: {
-        name: customer.name,
-        email: customer.email,
-        address: shippingAddress.street,
-        city: shippingAddress.city,
-        zipCode: shippingAddress.zipCode,
-      },
+      customer: customer,
       items: orderItems,
       paymentMethod: paymentMethod,
     });
@@ -102,7 +95,7 @@ export class CreateOrderUseCase {
       orderId: order.id!,
       amount: order.total,
       paymentMethod: order.paymentMethod,
-      customerId: customer.id!,
+      customerId: order.id!,
       customerEmail: customer.email,
     });
 

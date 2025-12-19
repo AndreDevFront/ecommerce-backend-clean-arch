@@ -1,21 +1,16 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { OrderItem } from 'src/domain/entities/order-item.entity';
 import { Order } from 'src/domain/entities/order.entity';
 import { PaymentGateway } from 'src/domain/gateways/payment.gateway';
 import { OrderRepository } from 'src/domain/repositories/order-repository.interface';
 import { ProductRepository } from 'src/domain/repositories/product-repository.interface';
-import { UserRepository } from 'src/domain/repositories/user-repository.interface';
+import { Customer } from 'src/domain/value-objects/customer.vo';
 
-interface PlaceOrderRequest {
-  customerId?: string;
-  customerInfo: {
-    name: string;
-    email: string;
-    address: string;
+export interface PlaceOrderRequest {
+  name: string;
+  email: string;
+  shippingAddress: {
+    street: string;
     city: string;
     zipCode: string;
   };
@@ -42,20 +37,23 @@ export class PlaceOrderUseCase {
   constructor(
     private orderRepository: OrderRepository,
     private productRepository: ProductRepository,
-    private userRepository: UserRepository,
     private paymentGateway: PaymentGateway,
   ) {}
 
   async execute({
-    customerId,
-    customerInfo,
+    name,
+    email,
+    shippingAddress,
     items,
     paymentMethod,
   }: PlaceOrderRequest): Promise<PlaceOrderResponse> {
-    if (customerId) {
-      const customer = await this.userRepository.findById(customerId);
-      if (!customer) throw new NotFoundException('Customer not found');
-    }
+    const customer = new Customer(
+      name,
+      email,
+      shippingAddress.street,
+      shippingAddress.city,
+      shippingAddress.zipCode,
+    );
 
     const orderItems: OrderItem[] = [];
 
@@ -64,6 +62,12 @@ export class PlaceOrderUseCase {
 
       if (!product) {
         throw new BadRequestException(`Product ${item.productId} not found`);
+      }
+
+      if (product.stock < item.quantity) {
+        throw new BadRequestException(
+          `Product ${product.name} has insufficient stock`,
+        );
       }
 
       orderItems.push(
@@ -77,14 +81,7 @@ export class PlaceOrderUseCase {
     }
 
     const order = new Order({
-      customerId: customerId,
-      customerInfo: {
-        name: customerInfo.name,
-        email: customerInfo.email,
-        address: customerInfo.address,
-        city: customerInfo.city,
-        zipCode: customerInfo.zipCode,
-      },
+      customer: customer,
       items: orderItems,
       paymentMethod: paymentMethod,
     });
@@ -95,8 +92,8 @@ export class PlaceOrderUseCase {
       orderId: order.id!,
       amount: order.total,
       paymentMethod: order.paymentMethod,
-      customerId: customerId ?? 'guest',
-      customerEmail: customerInfo.email,
+      customerId: order.id!,
+      customerEmail: customer.email,
     });
 
     return {

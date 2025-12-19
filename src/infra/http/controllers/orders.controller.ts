@@ -18,11 +18,10 @@ export class OrdersController {
     const formattedCity = `${body.address.city}/${body.address.state.toUpperCase()}`;
 
     const result = await this.placeOrderUseCase.execute({
-      customerId: undefined,
-      customerInfo: {
-        name: body.name,
-        email: body.email,
-        address: formattedAddress,
+      name: body.name,
+      email: body.email,
+      shippingAddress: {
+        street: formattedAddress,
         city: formattedCity,
         zipCode: body.address.zipCode,
       },
