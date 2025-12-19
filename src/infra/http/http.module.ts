@@ -13,11 +13,13 @@ import { GetProductUseCase } from 'src/application/use-cases/get-product.use-cas
 import { ListProductsUseCase } from 'src/application/use-cases/list-products.use-case';
 import { PlaceOrderUseCase } from 'src/application/use-cases/place-order.use-case';
 import { UploadImageUseCase } from 'src/application/use-cases/upload-image.use-case';
+import { MailGateway } from 'src/domain/gateways/mail.gateway';
 import { PaymentGateway } from 'src/domain/gateways/payment.gateway';
 import { DatabaseModule } from '../database/database.module';
 import { EnvModule } from '../env/env.module';
 import { SendOrderEmailListener } from '../listeners/send-order-email.listener';
 import { MailModule } from '../mail/mail.module';
+import { ResendGateway } from '../mail/resend.gateway';
 import { StripeGateway } from '../payment/stripe.gateway';
 import { StorageModule } from '../storage/storage.module';
 import { ApproveOrderController } from './controllers/approve-order.controller';
@@ -30,6 +32,7 @@ import { OrdersController } from './controllers/orders.controller';
 import { ProductsController } from './controllers/products.controller';
 import { UploadController } from './controllers/upload.controller';
 import { UsersController } from './controllers/users.controller';
+import { WebhookController } from './controllers/webhook.controller';
 
 @Module({
   imports: [DatabaseModule, StorageModule, MailModule, EnvModule],
@@ -44,6 +47,7 @@ import { UsersController } from './controllers/users.controller';
     FetchRecentOrdersController,
     GetProductController,
     DeleteProductController,
+    WebhookController,
   ],
   providers: [
     CreateProductUseCase,
@@ -64,6 +68,10 @@ import { UsersController } from './controllers/users.controller';
     {
       provide: PaymentGateway,
       useClass: StripeGateway,
+    },
+    {
+      provide: MailGateway,
+      useClass: ResendGateway,
     },
   ],
 })

@@ -70,4 +70,8 @@ export class EnvService {
   get getStripeSecretKey() {
     return this.configService.get('STRIPE_SECRET_KEY', { infer: true });
   }
+
+  get getStripeWebhookSecret() {
+    return this.configService.get('STRIPE_WEBHOOK_SECRET', { infer: true });
+  }
 }

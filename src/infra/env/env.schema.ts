@@ -24,6 +24,7 @@ export const envSchema = z.object({
   RESEND_PRODUCTION: z.string(),
   MAIL_FROM: z.email(),
   STRIPE_SECRET_KEY: z.string(),
+  STRIPE_WEBHOOK_SECRET: z.string(),
 });
 
 export const databaseSchema = z.object({
