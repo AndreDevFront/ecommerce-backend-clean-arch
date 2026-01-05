@@ -20,6 +20,7 @@ import { EnvModule } from '../env/env.module';
 import { SendOrderEmailListener } from '../listeners/send-order-email.listener';
 import { MailModule } from '../mail/mail.module';
 import { ResendGateway } from '../mail/resend.gateway';
+import { MessagingModule } from '../messaging/messaging.module';
 import { StripeGateway } from '../payment/stripe.gateway';
 import { StorageModule } from '../storage/storage.module';
 import { ApproveOrderController } from './controllers/approve-order.controller';
@@ -35,7 +36,13 @@ import { UsersController } from './controllers/users.controller';
 import { WebhookController } from './controllers/webhook.controller';
 
 @Module({
-  imports: [DatabaseModule, StorageModule, MailModule, EnvModule],
+  imports: [
+    DatabaseModule,
+    StorageModule,
+    MailModule,
+    EnvModule,
+    MessagingModule,
+  ],
   controllers: [
     ProductsController,
     UsersController,
@@ -54,7 +61,6 @@ import { WebhookController } from './controllers/webhook.controller';
     ListProductsUseCase,
     CreateUserUseCase,
     AuthenticateUserUseCase,
-
     EditProductUseCase,
     DeleteProductUseCase,
     UploadImageUseCase,
