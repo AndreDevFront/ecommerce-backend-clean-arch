@@ -25,6 +25,9 @@ export const envSchema = z.object({
   MAIL_FROM: z.email(),
   STRIPE_SECRET_KEY: z.string(),
   STRIPE_WEBHOOK_SECRET: z.string(),
+  REDIS_HOST: z.string(),
+  REDIS_PORT: z.coerce.number().default(6379),
+  REDIS_PASSWORD: z.string(),
 });
 
 export const databaseSchema = z.object({

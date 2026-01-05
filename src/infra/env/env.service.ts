@@ -74,4 +74,16 @@ export class EnvService {
   get getStripeWebhookSecret() {
     return this.configService.get('STRIPE_WEBHOOK_SECRET', { infer: true });
   }
+
+  get redisHost() {
+    return this.configService.get('REDIS_HOST', { infer: true });
+  }
+
+  get redisPort() {
+    return this.configService.get('REDIS_PORT', { infer: true });
+  }
+
+  get redisPassword() {
+    return this.configService.get('REDIS_PASSWORD', { infer: true });
+  }
 }

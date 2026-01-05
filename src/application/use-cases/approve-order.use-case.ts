@@ -1,6 +1,7 @@
+import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Queue } from 'bullmq';
 import { Order } from 'src/domain/entities/order.entity';
-import { MailGateway } from 'src/domain/gateways/mail.gateway';
 import { OrderRepository } from 'src/domain/repositories/order-repository.interface';
 
 interface ApproveOrderRequest {
@@ -11,7 +12,7 @@ interface ApproveOrderRequest {
 export class ApproveOrderUseCase {
   constructor(
     private orderRepository: OrderRepository,
-    private mailGateway: MailGateway,
+    @InjectQueue('emails') private emailQueue: Queue,
   ) {}
 
   async execute({ orderId }: ApproveOrderRequest): Promise<Order> {
@@ -26,9 +27,12 @@ export class ApproveOrderUseCase {
     await this.orderRepository.save(order);
 
     if (order.customer && order.customer.email) {
-      console.log('📧 Tentando enviar email para:', order.customer.email);
+      console.log(
+        '🎫 [Queue] Adicionando e-mail na fila para:',
+        order.customer.email,
+      );
 
-      await this.mailGateway.send({
+      await this.emailQueue.add('send-email', {
         to: order.customer.email,
         subject: 'Pagamento Aprovado! 🕯️',
         body: `Olá ${order.customer.name}, seu pagamento foi confirmado e estamos preparando suas velas!`,
