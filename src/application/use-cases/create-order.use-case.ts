@@ -64,13 +64,13 @@ export class CreateOrderUseCase {
       const product = await this.productRepository.findById(item.productId);
 
       if (!product) {
-        throw new BadRequestException(`Product ${item.productId} not found`);
+        throw new BadRequestException(
+          `Produto ${item.productId} não encontrado`,
+        );
       }
 
       if (product.stock < item.quantity) {
-        throw new BadRequestException(
-          `Product ${product.name} has insufficient stock`,
-        );
+        throw new BadRequestException(`Produto ${product.name} sem estoque`);
       }
 
       orderItems.push(
