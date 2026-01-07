@@ -73,6 +73,10 @@ export class CreateOrderUseCase {
         throw new BadRequestException(`Produto ${product.name} sem estoque`);
       }
 
+      product.decreaseStock(item.quantity);
+
+      await this.productRepository.save(product);
+
       orderItems.push(
         new OrderItem({
           productId: product.id!,
