@@ -67,6 +67,11 @@ export class Product {
     this._props.stock -= quantity;
   }
 
+  public increaseStock(quantity: number) {
+    this._props.stock += quantity;
+    this.update({});
+  }
+
   public update(
     params: Partial<Omit<ProductProps, 'id' | 'createdAt' | 'updatedAt'>>,
   ) {

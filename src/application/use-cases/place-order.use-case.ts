@@ -70,15 +70,9 @@ export class PlaceOrderUseCase {
         );
       }
 
-      console.log(`🔍 [DEBUG] Estoque ANTES: ${product.stock}`);
-
       product.decreaseStock(item.quantity);
 
-      console.log(`📉 [DEBUG] Estoque DEPOIS: ${product.stock}`);
-
       await this.productRepository.save(product);
-
-      console.log(`💾 [DEBUG] Salvo no Banco!`);
 
       orderItems.push(
         new OrderItem({

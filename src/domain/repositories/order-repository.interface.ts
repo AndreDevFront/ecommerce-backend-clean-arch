@@ -9,4 +9,5 @@ export abstract class OrderRepository {
   abstract findById(id: string): Promise<Order | null>;
   abstract save(order: Order): Promise<void>;
   abstract findManyRecent(params: FindManyRecentProps): Promise<Order[]>;
+  abstract findPendingOlderThan(date: Date): Promise<Order[]>;
 }

@@ -5,7 +5,7 @@ import {
   FindManyRecentProps,
   OrderRepository,
 } from 'src/domain/repositories/order-repository.interface';
-import { Repository } from 'typeorm';
+import { LessThan, Repository } from 'typeorm';
 import { OrderSchema } from '../entities/order.schema';
 import { TypeOrmOrderMapper } from '../mappers/typeorm-order.mapper';
 
@@ -51,5 +51,17 @@ export class TypeOrmOrderRepository implements OrderRepository {
     const created = this.typeOrmRepo.create(data);
 
     await this.typeOrmRepo.save(created);
+  }
+
+  async findPendingOlderThan(date: Date): Promise<Order[]> {
+    const orders = await this.typeOrmRepo.find({
+      where: {
+        status: 'PENDING',
+        createdAt: LessThan(date),
+      },
+      relations: ['items'],
+    });
+
+    return orders.map((order) => TypeOrmOrderMapper.toDomain(order));
   }
 }
