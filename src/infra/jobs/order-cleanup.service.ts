@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { OrderRepository } from 'src/domain/repositories/order-repository.interface';
 import { ProductRepository } from 'src/domain/repositories/product-repository.interface';
 
@@ -12,8 +12,7 @@ export class OrderCleanupService {
     private productRepository: ProductRepository,
   ) {}
 
-  // @Cron(CronExpression.EVERY_5_MINUTES)
-  @Cron('*/10 * * * * *')
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async handleCron() {
     this.logger.debug('🧹 Verificando pedidos expirados...');
 
