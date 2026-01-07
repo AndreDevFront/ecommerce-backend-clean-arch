@@ -72,10 +72,15 @@ export class CreateOrderUseCase {
       if (product.stock < item.quantity) {
         throw new BadRequestException(`Produto ${product.name} sem estoque`);
       }
+      console.log(`🔍 [DEBUG] Estoque ANTES: ${product.stock}`);
 
       product.decreaseStock(item.quantity);
 
+      console.log(`📉 [DEBUG] Estoque DEPOIS (Memória): ${product.stock}`);
+
       await this.productRepository.save(product);
+
+      console.log(`💾 [DEBUG] Salvo no Banco!`);
 
       orderItems.push(
         new OrderItem({
