@@ -12,7 +12,15 @@ const pageQueryParamSchema = z
   .transform(Number)
   .pipe(z.number().min(1));
 
+const perPageQueryParamSchema = z
+  .string()
+  .optional()
+  .default('10')
+  .transform(Number)
+  .pipe(z.number().min(1));
+
 const queryValidationPipe = new ZodValidationPipe(pageQueryParamSchema);
+const perPageValidationPipe = new ZodValidationPipe(perPageQueryParamSchema);
 
 type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>;
 
@@ -22,11 +30,18 @@ export class FetchRecentOrdersController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
-  async handle(@Query('page', queryValidationPipe) page: PageQueryParamSchema) {
-    const orders = await this.fetchRecentOrders.execute({
+  async handle(
+    @Query('page', queryValidationPipe) page: PageQueryParamSchema,
+    @Query('perPage', perPageValidationPipe) perPage: number,
+  ) {
+    const result = await this.fetchRecentOrders.execute({
       page,
+      perPage,
     });
 
-    return { orders: orders.map((order) => OrderPresenter.toHTTP(order)) };
+    return {
+      orders: result.data.map((order) => OrderPresenter.toHTTP(order)),
+      meta: result.meta,
+    };
   }
 }
