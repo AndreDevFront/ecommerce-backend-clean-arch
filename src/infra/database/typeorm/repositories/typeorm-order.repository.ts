@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginatedResult, PaginationParams } from 'src/core/types/pagination';
 import { Order } from 'src/domain/entities/order.entity';
-import {
-  FindManyRecentProps,
-  OrderRepository,
-} from 'src/domain/repositories/order-repository.interface';
+import { OrderRepository } from 'src/domain/repositories/order-repository.interface';
 import { LessThan, Repository } from 'typeorm';
 import { OrderSchema } from '../entities/order.schema';
 import { TypeOrmOrderMapper } from '../mappers/typeorm-order.mapper';
@@ -16,15 +14,26 @@ export class TypeOrmOrderRepository implements OrderRepository {
     private typeOrmRepo: Repository<OrderSchema>,
   ) {}
 
-  async findManyRecent({ page }: FindManyRecentProps): Promise<Order[]> {
-    const orders = await this.typeOrmRepo.find({
+  async findManyRecent({
+    page,
+    perPage,
+  }: PaginationParams): Promise<PaginatedResult<Order>> {
+    const [orders, total] = await this.typeOrmRepo.findAndCount({
+      skip: (page - 1) * perPage,
+      take: perPage,
       order: { createdAt: 'DESC' },
-      take: 20,
-      skip: (page - 1) * 20,
       relations: ['items'],
     });
 
-    return orders.map((order) => TypeOrmOrderMapper.toDomain(order));
+    return {
+      data: orders.map((item) => TypeOrmOrderMapper.toDomain(item)),
+      meta: {
+        page,
+        perPage,
+        total,
+        totalPages: Math.ceil(total / perPage),
+      },
+    };
   }
 
   async findById(id: string): Promise<Order | null> {
