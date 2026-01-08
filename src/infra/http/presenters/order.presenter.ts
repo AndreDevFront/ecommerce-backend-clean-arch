@@ -10,8 +10,12 @@ export class OrderPresenter {
       customer: {
         name: order.customer.name,
         email: order.customer.email,
-        address: order.customer.address,
+        street: order.customer.address,
+        number: 'S/N',
+        complement: '',
+        neighborhood: '',
         city: order.customer.city,
+        state: '',
         zipCode: order.customer.zipCode,
       },
       items: order.items.map((item) => OrderPresenter.toHTTPItem(item)),
