@@ -73,4 +73,21 @@ export class TypeOrmOrderRepository implements OrderRepository {
 
     return orders.map((order) => TypeOrmOrderMapper.toDomain(order));
   }
+
+  async calculateTotalRevenue(): Promise<number> {
+    const result = await this.typeOrmRepo
+      .createQueryBuilder('order')
+      .where('order.status = :status', { status: 'PAID' })
+      .select('SUM(order.total)', 'sum')
+      .getRawOne<{ sum: string }>();
+    return Number(result?.sum) || 0;
+  }
+
+  async countPaidOrders(): Promise<number> {
+    return this.typeOrmRepo.count({
+      where: {
+        status: 'PAID',
+      },
+    });
+  }
 }

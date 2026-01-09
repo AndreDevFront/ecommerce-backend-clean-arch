@@ -8,4 +8,5 @@ export abstract class ProductRepository {
   abstract findById(id: string): Promise<Product | null>;
   abstract save(product: Product): Promise<void>;
   abstract delete(id: string): Promise<void>;
+  abstract findLowStock(limit: number): Promise<Product[]>;
 }

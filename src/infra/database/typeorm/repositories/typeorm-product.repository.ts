@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { ProductRepository } from 'src/domain/repositories/product-repository.interface';
+import { PaginatedResult, PaginationParams } from 'src/core/types/pagination';
 import { Product } from 'src/domain/entities/product.entity';
+import { ProductRepository } from 'src/domain/repositories/product-repository.interface';
+import { LessThan, Repository } from 'typeorm';
 import { ProductSchema } from '../entities/product.schema';
 import { TypeOrmProductMapper } from '../mappers/typeorm-product.mapper';
-import { PaginationParams, PaginatedResult } from 'src/core/types/pagination';
 
 @Injectable()
 export class TypeOrmProductRepository implements ProductRepository {
@@ -72,5 +72,19 @@ export class TypeOrmProductRepository implements ProductRepository {
     }
 
     return TypeOrmProductMapper.toDomain(found);
+  }
+
+  async findLowStock(limit: number): Promise<Product[]> {
+    const products = await this.typeOrmRepo.find({
+      where: {
+        stock: LessThan(limit),
+      },
+      take: 5,
+      order: {
+        stock: 'ASC',
+      },
+    });
+
+    return products as unknown as Product[];
   }
 }

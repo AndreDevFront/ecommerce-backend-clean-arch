@@ -8,6 +8,7 @@ import { CreateUserUseCase } from 'src/application/use-cases/create-user.use-cas
 import { DeleteProductUseCase } from 'src/application/use-cases/delete-product.use-case';
 import { EditProductUseCase } from 'src/application/use-cases/edit-product.use-case';
 import { FetchRecentOrdersUseCase } from 'src/application/use-cases/fetch-recent-orders.use-case';
+import { GetDashboardMetricsUseCase } from 'src/application/use-cases/get-dashboard-metrics.use-case';
 import { GetProductBySlugUseCase } from 'src/application/use-cases/get-product-by-slug.use-case';
 import { GetProductUseCase } from 'src/application/use-cases/get-product.use-case';
 import { ListProductsUseCase } from 'src/application/use-cases/list-products.use-case';
@@ -26,6 +27,7 @@ import { StorageModule } from '../storage/storage.module';
 import { ApproveOrderController } from './controllers/approve-order.controller';
 import { AuthenticateController } from './controllers/authenticate.controller';
 import { CancelOrderController } from './controllers/cancel-order.controller';
+import { DashboardController } from './controllers/dashboard.controller';
 import { DeleteProductController } from './controllers/delete-product.controller';
 import { FetchRecentOrdersController } from './controllers/fetch-recent-orders.controller';
 import { GetProductController } from './controllers/get-product.controller';
@@ -55,6 +57,7 @@ import { WebhookController } from './controllers/webhook.controller';
     GetProductController,
     DeleteProductController,
     WebhookController,
+    DashboardController,
   ],
   providers: [
     CreateProductUseCase,
@@ -79,6 +82,7 @@ import { WebhookController } from './controllers/webhook.controller';
       provide: MailGateway,
       useClass: ResendGateway,
     },
+    GetDashboardMetricsUseCase,
   ],
 })
 export class HttpModule {}

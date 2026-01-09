@@ -14,4 +14,6 @@ export abstract class OrderRepository {
   abstract findManyRecent(
     params: PaginationParams,
   ): Promise<PaginatedResult<Order>>;
+  abstract calculateTotalRevenue(): Promise<number>;
+  abstract countPaidOrders(): Promise<number>;
 }
