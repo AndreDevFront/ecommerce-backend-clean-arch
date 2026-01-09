@@ -24,6 +24,13 @@ export class ApproveOrderUseCase {
       throw new NotFoundException('Order not found');
     }
 
+    if (order.status === 'PAID') {
+      console.log(
+        `🔁 Pedido ${orderId} já processado anteriormente. Ignorando duplicidade.`,
+      );
+      return order;
+    }
+
     order.approve();
     await this.orderRepository.save(order);
 
