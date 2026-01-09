@@ -70,10 +70,6 @@ export class PlaceOrderUseCase {
         );
       }
 
-      product.decreaseStock(item.quantity);
-
-      await this.productRepository.save(product);
-
       orderItems.push(
         new OrderItem({
           productId: product.id!,
