@@ -1,16 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { OrderRepository } from 'src/domain/repositories/order-repository.interface';
-import { ProductRepository } from 'src/domain/repositories/product-repository.interface';
 
 @Injectable()
 export class OrderCleanupService {
   private readonly logger = new Logger(OrderCleanupService.name);
 
-  constructor(
-    private orderRepository: OrderRepository,
-    private productRepository: ProductRepository,
-  ) {}
+  constructor(private orderRepository: OrderRepository) {}
 
   @Cron(CronExpression.EVERY_5_MINUTES)
   async handleCron() {
@@ -32,19 +28,6 @@ export class OrderCleanupService {
 
     for (const order of expiredOrders) {
       try {
-        for (const item of order.items) {
-          const product = await this.productRepository.findById(item.productId);
-
-          if (product) {
-            product.increaseStock(item.quantity);
-            await this.productRepository.save(product);
-
-            this.logger.log(
-              `🔄 Estoque devolvido: +${item.quantity} para o produto "${product.name}"`,
-            );
-          }
-        }
-
         order.cancel();
 
         await this.orderRepository.save(order);
