@@ -46,6 +46,9 @@ export class ProductSchema {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Column({ nullable: true })
-  image: string;
+  // @Column({ nullable: true })
+  // image: string;
+
+  @Column('text', { array: true, default: {} })
+  images: string[];
 }

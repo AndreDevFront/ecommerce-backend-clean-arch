@@ -11,7 +11,7 @@ export type ProductProps = {
   attributes: Record<string, any>;
   createdAt?: Date;
   updatedAt?: Date;
-  image?: string | null;
+  images?: string[];
 };
 
 export class Product {
@@ -25,7 +25,7 @@ export class Product {
       attributes: props.attributes ?? {},
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? new Date(),
-      image: props.image ?? null,
+      images: props.images ?? [],
     };
   }
 
@@ -80,7 +80,13 @@ export class Product {
     this._props.updatedAt = new Date();
   }
 
+  get images() {
+    return this._props.images;
+  }
+
   get image() {
-    return this._props.image;
+    return this._props.images && this._props.images.length > 0
+      ? this._props.images[0]
+      : null;
   }
 }

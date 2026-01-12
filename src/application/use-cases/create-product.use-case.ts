@@ -10,7 +10,7 @@ interface CreateProductRequest {
   price: number;
   stock: number;
   attributes?: Record<string, any>;
-  image?: string | null;
+  images?: string[] | null;
 }
 
 @Injectable()
@@ -32,7 +32,7 @@ export class CreateProductUseCase {
       stock: request.stock,
       attributes: request.attributes || {},
       isActive: true,
-      image: request.image || null,
+      images: request.images || [],
     });
 
     await this.productRepository.create(product);
