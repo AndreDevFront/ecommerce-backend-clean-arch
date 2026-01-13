@@ -89,4 +89,21 @@ export class Product {
       ? this._props.images[0]
       : null;
   }
+
+  public toJSON() {
+    return {
+      id: this.id,
+      name: this.name,
+      slug: this.slug,
+      description: this.description,
+      price: this.price,
+      stock: this.stock,
+      isActive: this.isActive,
+      attributes: this.attributes,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+      images: this.images,
+      image: this.image,
+    };
+  }
 }
