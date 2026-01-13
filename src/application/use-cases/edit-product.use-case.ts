@@ -13,7 +13,7 @@ interface EditProductRequest {
   stock?: number;
   attributes?: Record<string, any>;
   isActive?: boolean;
-  image?: string | null;
+  images?: string[];
 }
 
 @Injectable()

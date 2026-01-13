@@ -24,6 +24,7 @@ export class ProductPresenter {
       isActive,
       attributes,
       imageUrl: image ? `${image}` : null,
+      images: product.images,
       createdAt,
     };
   }
