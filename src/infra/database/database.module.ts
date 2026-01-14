@@ -8,6 +8,7 @@ import { EnvService } from '../env/env.service';
 import { OrderItemSchema } from './typeorm/entities/order-item.schema';
 import { OrderSchema } from './typeorm/entities/order.schema';
 import { ProductSchema } from './typeorm/entities/product.schema';
+import { StoreConfigSchema } from './typeorm/entities/store-config.schema';
 import { UserSchema } from './typeorm/entities/user.schema';
 import { TypeOrmOrderRepository } from './typeorm/repositories/typeorm-order.repository';
 import { TypeOrmProductRepository } from './typeorm/repositories/typeorm-product.repository';
@@ -23,7 +24,13 @@ import { TypeOrmUserRepository } from './typeorm/repositories/typeorm-user.repos
         url: envService.getDatabaseUrl,
         ssl: true,
         extra: { ssl: { rejectUnauthorized: false } },
-        entities: [ProductSchema, UserSchema, OrderSchema, OrderItemSchema],
+        entities: [
+          ProductSchema,
+          UserSchema,
+          OrderSchema,
+          OrderItemSchema,
+          StoreConfigSchema,
+        ],
         // synchronize: envService.isDevelopment,
         synchronize: true,
       }),
