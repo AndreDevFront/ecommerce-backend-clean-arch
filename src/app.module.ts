@@ -14,6 +14,7 @@ import { MailModule } from './infra/mail/mail.module';
 import { PaymentModule } from './infra/payment/payment.module';
 import { StorageModule } from './infra/storage/storage.module';
 @Module({
+  controllers: [HealthController],
   imports: [
     StoreConfigModule,
     InfraModule,
@@ -24,7 +25,6 @@ import { StorageModule } from './infra/storage/storage.module';
     PaymentModule,
     EventEmitterModule.forRoot(),
     ScheduleModule.forRoot(),
-    HealthController,
     ThrottlerModule.forRoot([
       {
         ttl: 60000,
