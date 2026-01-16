@@ -4,6 +4,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AuthModule } from './infra/auth/auth.module';
+import { HealthController } from './infra/http/controllers/health.controller';
 import { HttpModule } from './infra/http/http.module';
 import { StoreConfigModule } from './infra/http/modules/store-config.module';
 import { InfraModule } from './infra/infra.module';
@@ -23,6 +24,7 @@ import { StorageModule } from './infra/storage/storage.module';
     PaymentModule,
     EventEmitterModule.forRoot(),
     ScheduleModule.forRoot(),
+    HealthController,
     ThrottlerModule.forRoot([
       {
         ttl: 60000,
