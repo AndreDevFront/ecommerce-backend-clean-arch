@@ -1,8 +1,9 @@
-import { Body, Controller, Post, UsePipes, HttpCode } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, UsePipes } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { AuthenticateUserUseCase } from 'src/application/use-cases/authenticate-user.use-case';
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
-import { AuthenticateSchema } from './schemas/authenticate.schema';
 import type { AuthenticateDto } from './schemas/authenticate.schema';
+import { AuthenticateSchema } from './schemas/authenticate.schema';
 
 @Controller('sessions')
 export class AuthenticateController {
@@ -10,6 +11,7 @@ export class AuthenticateController {
 
   @Post()
   @HttpCode(200)
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @UsePipes(new ZodValidationPipe(AuthenticateSchema.schema))
   async handle(@Body() body: AuthenticateDto) {
     const { accessToken } = await this.authenticateUser.execute({
